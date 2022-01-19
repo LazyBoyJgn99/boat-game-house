@@ -4,7 +4,6 @@ import Tools from './pages/Tools'
 import About from './pages/About'
 
 import './App.css'
-import 'antd/dist/antd.css'
 
 function App() {
   return (

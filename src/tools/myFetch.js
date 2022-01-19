@@ -1,4 +1,3 @@
-import { message } from 'antd'
 // const baseUrl = 'https://mock.yonyoucloud.com/mock/19838/dddcz-game-house'
 // export const baseUrl = 'http://106.15.32.115:8095/api'
 export const baseUrl = 'http://127.0.0.1:8080/api'
@@ -23,14 +22,14 @@ function http(url, params, headers, method) {
       throw new Error('Network response was not ok.')
     })
     .catch(error => {
-      message.error('There has been a problem with your fetch operation: ', error.message)
+      console.log('There has been a problem with your fetch operation: ', error.message)
       return error
     })
     .then(data => {
       if (data.success) {
-        if (data?.msg) message.success(data.msg)
+        if (data?.msg) console.log(data.msg)
       } else {
-        if (data?.msg) message.warning(data.msg)
+        if (data?.msg) console.log(data.msg)
         if (data?.state === 701) {
           window.location.hash = '#/login'
           return null

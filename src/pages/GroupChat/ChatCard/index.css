@@ -1,0 +1,52 @@
+.chat-card-left, .chat-card-right {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    max-width: 400px;
+    width: auto;
+    min-height: 80px;
+    margin-top: 16px;
+}
+.chat-card-right {
+    text-align: right;
+    flex-direction: row-reverse;
+    margin-left: auto;
+}
+.chat-card-warp-left, .chat-card-warp-right{
+    width: 100%;
+}
+.chat-card-warp-left {
+    padding-left: 8px;
+}
+.chat-card-warp-right {
+    padding-right: 8px;
+}
+.chat-card-title-left, .chat-card-title-right {
+    min-height: 25px;
+    max-height: 25px;
+    line-height: 25px;
+    color: #888;
+}
+.chat-card-title-left {
+    padding-left: 8px;
+}
+.chat-card-title-right {
+    padding-right: 8px;
+}
+.chat-card-cont-left,.chat-card-cont-right {
+    display: inline-block;
+    width: auto;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: rgb(243, 243, 243);
+}
+.avatar {
+    min-width: 40px;
+}
+.left-warp .right-warp {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+.right-warp {
+}

@@ -1,0 +1,65 @@
+{
+  "env": {
+    "es6": true
+  },
+  "extends": [
+    "airbnb",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+    "react/state-in-constructor": [0],
+    "react/static-property-placement": [0],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "react/sort-comp": [0],
+    "class-methods-use-this": [0],
+    "react/prop-types": [0],
+    "react/require-default-props": [0],
+    "react/jsx-props-no-spreading": 0,
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-use-before-define": "off",
+    "import/extensions": [1, {
+      "json": "always",
+      "js": "never",
+      "scss": "always",
+      "ts": "never",
+      "tsx": "never"
+    }],
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "global-require": "off",
+    "no-shadow": "off",
+    "no-unused-vars": "off",
+    "no-undef": 0,
+    "no-bitwise": 0,
+    "consistent-return": 0,
+    "no-plusplus": 0,
+    "no-nested-ternary": 0
+  },
+  "globals": {
+    "window": true
+  },
+  "settings": {
+    "import/resolver": {
+        "node": {
+            "extensions": [
+                ".js",
+                ".jsx",
+                ".ts",
+                ".tsx"
+            ]
+        }
+    }
+  }
+}

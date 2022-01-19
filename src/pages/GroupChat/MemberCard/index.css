@@ -1,0 +1,23 @@
+.member-card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-height: 30px;
+    min-height: 30px;
+
+}
+.member-card-avatar {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.gray-avatar {
+    filter: grayscale(100);
+}
+.member-card-name {
+    flex: 1;
+    line-height: 30px;
+    color: #606266;
+}

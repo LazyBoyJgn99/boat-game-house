@@ -39,8 +39,8 @@ export default function Home() {
     // 创建渲染系统
     const rendererSystem = new RendererSystem({
       canvas: document.querySelector('#canvas'), // 可选，自动生成 canvas 挂在 game.canvas 上
-      width: 750,
-      height: 500,
+      width: 390,
+      height: 844,
       transparent: false,
       resolution: window.devicePixelRatio / 2, // 可选, 如果是2倍图设计 可以除以2
       enableScroll: true, // 允许页面滚动

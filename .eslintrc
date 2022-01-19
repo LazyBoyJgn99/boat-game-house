@@ -17,6 +17,7 @@
     "react"
   ],
   "rules": {
+    "jsx-a11y/no-noninteractive-element-interactions": [0],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
     "react/state-in-constructor": [0],
     "react/static-property-placement": [0],

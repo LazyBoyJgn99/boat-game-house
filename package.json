@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@eva/eva.js": "^1.2.5",
+    "@eva/plugin-renderer": "^1.2.5",
+    "@eva/plugin-renderer-img": "^1.2.5",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

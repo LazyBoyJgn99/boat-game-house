@@ -151,7 +151,6 @@ export default function Home() {
       >
         右
       </h1>
-      <canvas id="canvas" />
     </>
   )
 }

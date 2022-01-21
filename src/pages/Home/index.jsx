@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
 import { Game, GameObject, Component } from '@eva/eva.js'
-import { RendererSystem } from '@eva/plugin-renderer'
+// import { RendererSystem } from '@eva/plugin-renderer'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
-import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
+// import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
 
 import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings.js'
 import gameInfo from '../../constant/game'

@@ -95,9 +95,11 @@ export default function Home() {
     )
 
     let touched = false
+    let prePosition = { x: 0, y: 0 }
     evt.on('touchstart', e => {
       console.log(e)
       console.log('touchstart')
+      prePosition = e.data.position
       touched = true
     })
     evt.on('touchend', e => {
@@ -113,7 +115,13 @@ export default function Home() {
         console.log('gameObject', gameObject)
         console.log('data', data)
 
-        transform.position = data.position
+        const position = {
+          x: transform.position.x + data.position.x - prePosition.x,
+          y: transform.position.y + data.position.y - prePosition.y,
+        }
+        prePosition = e.data.position
+
+        transform.position = position
       }
     })
 

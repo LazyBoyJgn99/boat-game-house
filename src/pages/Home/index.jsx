@@ -6,7 +6,7 @@ import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片�
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
 import { Physics, PhysicsType, PhysicsSystem } from '@eva/plugin-matterjs'
 
-import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
+import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings'
 import gameInfo from '../../constant/game'
 
 import './index.css'

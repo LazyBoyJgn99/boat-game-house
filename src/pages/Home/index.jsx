@@ -4,6 +4,8 @@ import { resource, RESOURCE_TYPE, Game, GameObject, Component } from '@eva/eva.j
 import { RendererSystem } from '@eva/plugin-renderer'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
+// 1.安装物理引擎后引入
+import { PhysicsSystem, Physics, PhysicsType } from '@eva/plugin-matterjs'
 
 import './index.css'
 
@@ -55,6 +57,19 @@ export default function Home() {
           // moveWhenInside: true // 代表只有在元素内部才会执行move事件，默认为false
         }),
         new ImgSystem(),
+        new PhysicsSystem({
+          resolution: 2, // 保持RendererSystem的resolution一致
+          // isTest: true, // 是否开启调试模式
+          // element: document.getElementById('game-container'), // 调试模式下canvas节点的挂载点
+          world: {
+            gravity: {
+              y: 2, // 重力
+            },
+          },
+          mouse: {
+            open: true,
+          },
+        }),
       ],
     })
 
@@ -89,11 +104,34 @@ export default function Home() {
         resource: 'image2',
       }),
     )
+
     gameObject3.addComponent(
       new Img({
         resource: 'image2',
       }),
     )
+
+    const evt3 = gameObject3.addComponent(
+      new Physics({
+        type: PhysicsType.RECTANGLE,
+        bodyOptions: {
+          isStatic: false, // 物体是否静止，静止状态下任何作用力作用于物体都不会产生效果
+          restitution: 0.8,
+          frictionAir: 0.1,
+          friction: 0,
+          frictionStatic: 0,
+          force: {
+            x: 0,
+            y: 0,
+          },
+        },
+      }),
+    )
+
+    evt3.on('collisionStart', (gameObject1, gameObject2) => {
+      console.log('碰撞啦', gameObject1, gameObject2)
+    })
+
     const evt = gameObject2.addComponent(
       new Event({
         // 使用这个属性设置交互事件可以触发的区域，骨骼动画有所变差，可以临时在当前游戏对象下添加一个同类型同属性的Graphic查看具体点击位置。
@@ -122,10 +160,10 @@ export default function Home() {
       if (touched) {
         const { gameObject, data } = e
         const { transform } = gameObject
-        console.log('touchmove')
-        console.log('e', e)
-        console.log('gameObject', gameObject)
-        console.log('data', data)
+        // console.log('touchmove')
+        // console.log('e', e)
+        // console.log('gameObject', gameObject)
+        // console.log('data', data)
 
         const position = {
           x: transform.position.x + data.position.x - prePosition.x,

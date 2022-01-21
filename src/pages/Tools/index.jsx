@@ -27,7 +27,7 @@ export default function Tools() {
         new RendererSystem({
           canvas: document.querySelector('#canvas'),
           width: 750,
-          height: 1000,
+          height: 1334,
           resolution: 2, // Keep the resolution of the RendererSystem consistent
         }),
         new ImgSystem(),
@@ -175,7 +175,7 @@ export default function Tools() {
       const go = new GameObject('button', {
         position: {
           x: 750 - 30,
-          y: 1000 - 30,
+          y: 1334 - 30,
         },
         origin: {
           x: 1,

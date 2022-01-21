@@ -5,7 +5,7 @@ import { RendererSystem } from '@eva/plugin-renderer'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
 
-import { seaBgOgj, shipOgj, shipLightObj, footH } from 'constant/objSettings.js'
+import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings.js'
 import './index.css'
 
 export default function Home() {
@@ -37,18 +37,18 @@ export default function Home() {
     game.addSystem(new ImgSystem()) // 给游戏添加渲染图片的能力
     seaBg = new GameObject('seaBg', {
       size: {
-        width: seaBgOgj.w,
-        height: seaBgOgj.h,
+        width: seaBgObj.w,
+        height: seaBgObj.h,
       },
     })
     ship = new GameObject('ship', {
       size: {
-        width: shipOgj.w,
-        height: shipOgj.h,
+        width: shipObj.w,
+        height: shipObj.h,
       },
       position: {
-        x: ((seaBgOgj.w - shipOgj.w) / 2).toFixed(0),
-        y: seaBgOgj.h - shipOgj.h - footH,
+        x: +((seaBgObj.w - shipObj.w) / 2).toFixed(0),
+        y: seaBgObj.h - shipObj.h - footH,
       },
     })
     shipLight = new GameObject('shipLight', {
@@ -57,8 +57,8 @@ export default function Home() {
         height: shipLightObj.h,
       },
       position: {
-        x: shipOgj.oW - (shipLightObj.w / 2).toFixed(0),
-        y: shipOgj.oH - (shipLightObj.h / 2).toFixed(0),
+        x: shipObj.oW - (shipLightObj.w / 2).toFixed(0),
+        y: shipObj.oH - (shipLightObj.h / 2).toFixed(0),
       },
     })
     seaBg.addComponent(
@@ -130,7 +130,7 @@ export default function Home() {
   return (
     <>
       <div className="home_bg">
-        <div className="home_top"></div>
+        <div className="home_top">1</div>
       </div>
     </>
   )

@@ -67,4 +67,37 @@ resource.addResource([
     },
     preload: true,
   },
+  {
+    name: 'reef',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/reef.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'fish1',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/fish1.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'shark',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/shark.png',
+      },
+    },
+    preload: true,
+  },
 ])

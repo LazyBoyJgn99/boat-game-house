@@ -4,8 +4,10 @@ import { Game, GameObject, Component } from '@eva/eva.js'
 import { RendererSystem } from '@eva/plugin-renderer'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
+import { Physics, PhysicsType, PhysicsSystem } from '@eva/plugin-matterjs'
 
-import { seaBgOgj, shipOgj, shipLightObj, footH } from 'constant/objSettings.js'
+import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
+
 import './index.css'
 
 export default function Home() {
@@ -31,6 +33,16 @@ export default function Home() {
           // moveWhenInside: true // 代表只有在元素内部才会执行move事件，默认为false
         }),
         new ImgSystem(),
+        new PhysicsSystem({
+          resolution: 2, // Keep the resolution of the RendererSystem consistent
+          isTest: true, // Whether to enable debugging mode
+          element: document.querySelector('.debugger'), // Mount point of canvas node in debug mode
+          world: {
+            gravity: {
+              y: 5, // gravity
+            },
+          },
+        }),
       ],
     })
 
@@ -51,6 +63,7 @@ export default function Home() {
         y: seaBgOgj.h - shipOgj.h - footH,
       },
     })
+
     shipLight = new GameObject('shipLight', {
       size: {
         width: shipLightObj.w,
@@ -69,6 +82,24 @@ export default function Home() {
     ship.addComponent(
       new Img({
         resource: 'ship',
+      }),
+    )
+
+    ship.addComponent(
+      new Physics({
+        type: PhysicsType.RECTANGLE,
+        bodyOptions: {
+          isStatic: true,
+          // restitution: 0,
+          frictionAir: 0,
+          friction: 0.06,
+          frictionStatic: 0.3,
+          force: {
+            x: 0,
+            y: 0,
+          },
+        },
+        stopRotation: true,
       }),
     )
     shipLight.addComponent(
@@ -125,12 +156,54 @@ export default function Home() {
     game.scene.addChild(seaBg) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
     game.scene.addChild(shipLight)
     game.scene.addChild(ship)
+
+    const blockImageNames = ['reef', 'fish1', 'shark']
+    setInterval(() => {
+      // console.log('开始添加')
+      const block = new GameObject('block', {
+        size: {
+          width: 80,
+          height: 80,
+        },
+        position: {
+          x: Math.floor(Math.random() * 390),
+          y: 0,
+        },
+      })
+      block.addComponent(
+        new Img({
+          resource: blockImageNames[Math.floor(Math.random() * 3)],
+        }),
+      )
+      const physics = block.addComponent(
+        new Physics({
+          type: PhysicsType.RECTANGLE,
+          bodyOptions: {
+            isStatic: false,
+            // restitution: 0,
+            frictionAir: 0.5 + (Math.random() * 4) / 10,
+            friction: 0.06,
+            frictionStatic: 0.3,
+            force: {
+              x: 0,
+              y: 0,
+            },
+          },
+          stopRotation: false,
+        }),
+      )
+
+      physics.on('collisionStart', () => {
+        console.log('啊，撞到了')
+      })
+      game.scene.addChild(block)
+    }, 1500)
   }, [])
 
   return (
     <>
       <div className="home_bg">
-        <div className="home_top"></div>
+        <div className="home_top" />
       </div>
     </>
   )

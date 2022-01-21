@@ -1,3 +1,15 @@
 .home_bg {
   position: relative;
+  width: 1500px;
+  height: 2667px;
+}
+
+.home_btn {
+  position: fixed;
+  width: 200px;
+  height: 200px;
+  bottom: 100px;
+  left: 650px;
+  background-color: aliceblue;
+  font-size: 100px;
 }

@@ -8,6 +8,8 @@ import { Text, TextSystem } from '@eva/plugin-renderer-text'
 import { Graphics, GraphicsSystem } from '@eva/plugin-renderer-graphics'
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
 
+import gameInfo from '../../constant/game'
+
 import './index.css'
 
 export default function Tools() {
@@ -16,37 +18,7 @@ export default function Tools() {
   let gameObject3
 
   useEffect(() => {
-    const game = new Game({
-      frameRate: 60, // 可选，游戏帧率，默认60
-      autoStart: true, // 可选，自动开始
-      transparent: false,
-      resolution: window.devicePixelRatio, // 可选, 如果是2倍图设计 可以除以2
-      enableScroll: true, // 允许页面滚动
-      renderType: 0, // 0:自动判断，1: WebGL，2:Canvas，建议android6.1 ios9 以下使用Canvas，需业务判断。z
-      systems: [
-        new RendererSystem({
-          canvas: document.querySelector('#canvas'),
-          width: 750,
-          height: 1000,
-          resolution: 2, // Keep the resolution of the RendererSystem consistent
-        }),
-        new ImgSystem(),
-        new PhysicsSystem({
-          resolution: 2, // Keep the resolution of the RendererSystem consistent
-          isTest: true, // Whether to enable debugging mode
-          element: document.querySelector('.debugger'), // Mount point of canvas node in debug mode
-          world: {
-            gravity: {
-              y: 5, // gravity
-            },
-          },
-        }),
-        new GraphicsSystem(),
-        new TextSystem(),
-        new EventSystem(),
-      ],
-    })
-
+    const { game } = gameInfo
     const { physics } = createPlayer()
     const { evt } = createButton()
     const walls = [createWall(0, 0, 20, 1000), createWall(750 - 20, 0, 20, 1000), createWall(0, 1000 - 20, 750, 20)]
@@ -175,7 +147,7 @@ export default function Tools() {
       const go = new GameObject('button', {
         position: {
           x: 750 - 30,
-          y: 1000 - 30,
+          y: 1334 - 30,
         },
         origin: {
           x: 1,

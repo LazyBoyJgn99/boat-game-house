@@ -3,6 +3,10 @@ export const seaBgObj = {
   w: 390,
   h: 844,
 }
+export const shipLightObj = {
+  w: 165,
+  h: 190,
+}
 export const shipObj = {
   w: 57,
   h: 111,
@@ -10,8 +14,4 @@ export const shipObj = {
   // oH: 844 - (111 / 2).toFixed(0) - 60,
   oW: (seaBgObj.w / 2).toFixed(0),
   oH: seaBgObj.h - (111 / 2).toFixed(0) - footH,
-}
-export const shipLightObj = {
-  w: 165,
-  h: 190,
 }

@@ -129,7 +129,7 @@ export default function Home() {
     game.scene.addChild(ship)
 
     const blockImageNames = ['reef', 'fish1', 'shark']
-    setInterval(() => {
+    const genBlock = () => {
       // console.log('开始添加')
       const block = new GameObject('block', {
         size: {
@@ -168,7 +168,12 @@ export default function Home() {
         console.log('啊，撞到了')
       })
       game.scene.addChild(block)
-    }, 1500)
+
+      setTimeout(() => {
+        requestAnimationFrame(genBlock)
+      }, 1500)
+    }
+    requestAnimationFrame(genBlock)
   }, [])
 
   return (

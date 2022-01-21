@@ -5,7 +5,9 @@ import { RendererSystem } from '@eva/plugin-renderer'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
 
-import { seaBgOgj, shipOgj, shipLightObj, footH } from 'constant/objSettings.js'
+import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
+import gameInfo from '../../constant/game'
+
 import './index.css'
 
 export default function Home() {
@@ -14,25 +16,7 @@ export default function Home() {
   let shipLight
 
   useEffect(() => {
-    const game = new Game({
-      frameRate: 60, // 可选，游戏帧率，默认60
-      autoStart: true, // 可选，自动开始
-      transparent: false,
-      resolution: window.devicePixelRatio, // 可选, 如果是2倍图设计 可以除以2
-      enableScroll: true, // 允许页面滚动
-      renderType: 0, // 0:自动判断，1: WebGL，2:Canvas，建议android6.1 ios9 以下使用Canvas，需业务判断。z
-      systems: [
-        new RendererSystem({
-          canvas: document.querySelector('#canvas'),
-          width: 390,
-          height: 844,
-        }),
-        new EventSystem({
-          // moveWhenInside: true // 代表只有在元素内部才会执行move事件，默认为false
-        }),
-        new ImgSystem(),
-      ],
-    })
+    const { game } = gameInfo
 
     game.addSystem(new ImgSystem()) // 给游戏添加渲染图片的能力
     seaBg = new GameObject('seaBg', {
@@ -130,7 +114,7 @@ export default function Home() {
   return (
     <>
       <div className="home_bg">
-        <div className="home_top"></div>
+        <div className="home_top" />
       </div>
     </>
   )

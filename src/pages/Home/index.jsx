@@ -57,8 +57,8 @@ export default function Home() {
         height: shipLightObj.h,
       },
       position: {
-        x: ((seaBgOgj.w - shipLightObj.w) / 2).toFixed(0),
-        y: seaBgOgj.h - shipLightObj.h - footH,
+        x: shipOgj.oW - (shipLightObj.w / 2).toFixed(0),
+        y: shipOgj.oH - (shipLightObj.h / 2).toFixed(0),
       },
     })
     seaBg.addComponent(

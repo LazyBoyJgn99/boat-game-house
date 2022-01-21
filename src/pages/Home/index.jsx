@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { resource, RESOURCE_TYPE, Game, GameObject } from '@eva/eva.js'
+import { resource, RESOURCE_TYPE, Game, GameObject, Component } from '@eva/eva.js'
 import { RendererSystem } from '@eva/plugin-renderer'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
@@ -35,6 +35,7 @@ resource.addResource([
 export default function Home() {
   let gameObject
   let gameObject2
+  let gameObject3
 
   useEffect(() => {
     const game = new Game({
@@ -71,6 +72,12 @@ export default function Home() {
         height: 50,
       },
     })
+    gameObject3 = new GameObject('gameObj2', {
+      size: {
+        width: 50,
+        height: 50,
+      },
+    })
     gameObject.addComponent(
       new Img({
         resource: 'image1',
@@ -78,6 +85,11 @@ export default function Home() {
     )
 
     gameObject2.addComponent(
+      new Img({
+        resource: 'image2',
+      }),
+    )
+    gameObject3.addComponent(
       new Img({
         resource: 'image2',
       }),
@@ -123,10 +135,26 @@ export default function Home() {
 
         transform.position = position
       }
+      const move = gameObject3.addComponent(
+        new Move({
+          speed: {
+            x: 250,
+            y: 200,
+          },
+        }),
+      )
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          game.pause()
+        } else {
+          game.resume()
+        }
+      })
     })
 
     game.scene.addChild(gameObject) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
     game.scene.addChild(gameObject2) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
+    game.scene.addChild(gameObject3) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
   }, [])
 
   return (
@@ -161,4 +189,44 @@ export default function Home() {
       </h1>
     </>
   )
+}
+
+class Move extends Component {
+  static componentName = 'Move'
+
+  speed = {
+    // 移动速度
+    x: 100,
+    y: 200,
+  }
+
+  init(obj) {
+    Object.assign(this, obj)
+  }
+
+  update(e) {
+    // 每秒 N 像素
+    // console.log(e)
+    const { position } = this.gameObject.transform
+    this.gameObject.transform.position.x += this.speed.x * (e.deltaTime / 1000)
+    this.gameObject.transform.position.y += this.speed.y * (e.deltaTime / 1000)
+    if (position.x >= 390 || position.x <= 0) {
+      this.speed.x = -this.speed.x
+    }
+    if (position.y >= 844 || position.y <= 0) {
+      this.speed.y = -this.speed.y
+    }
+  }
+
+  onPause() {
+    this.oldSpeed = this.speed
+    this.speed = {
+      x: 0,
+      y: 0,
+    }
+  }
+
+  onResume() {
+    this.speed = this.oldSpeed
+  }
 }

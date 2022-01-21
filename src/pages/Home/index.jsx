@@ -8,7 +8,6 @@ import { Physics, PhysicsType, PhysicsSystem } from '@eva/plugin-matterjs'
 
 import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
 
-import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
 import gameInfo from '../../constant/game'
 
 import './index.css'

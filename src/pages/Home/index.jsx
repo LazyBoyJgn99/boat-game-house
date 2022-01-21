@@ -5,6 +5,7 @@ import { RendererSystem } from '@eva/plugin-renderer'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
 
+import { seaBgOgj, shipOgj, shipLightObj, footH } from 'constant/objSettings.js'
 import './index.css'
 
 export default function Home() {
@@ -36,28 +37,28 @@ export default function Home() {
     game.addSystem(new ImgSystem()) // 给游戏添加渲染图片的能力
     seaBg = new GameObject('seaBg', {
       size: {
-        width: 390,
-        height: 844,
+        width: seaBgOgj.w,
+        height: seaBgOgj.h,
       },
     })
     ship = new GameObject('ship', {
       size: {
-        width: 57,
-        height: 111,
+        width: shipOgj.w,
+        height: shipOgj.h,
       },
       position: {
-        x: 166,
-        y: 673,
+        x: ((seaBgOgj.w - shipOgj.w) / 2).toFixed(0),
+        y: seaBgOgj.h - shipOgj.h - footH,
       },
     })
     shipLight = new GameObject('shipLight', {
       size: {
-        width: 165,
-        height: 190,
+        width: shipLightObj.w,
+        height: shipLightObj.h,
       },
       position: {
-        x: 112,
-        y: 624,
+        x: ((seaBgOgj.w - shipLightObj.w) / 2).toFixed(0),
+        y: seaBgOgj.h - shipLightObj.h - footH,
       },
     })
     seaBg.addComponent(

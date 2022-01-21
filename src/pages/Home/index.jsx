@@ -170,6 +170,10 @@ export default function Home() {
       game.scene.addChild(block)
 
       setTimeout(() => {
+        game.scene.removeChild(block)
+      }, 20000)
+
+      setTimeout(() => {
         requestAnimationFrame(genBlock)
       }, 1500)
     }

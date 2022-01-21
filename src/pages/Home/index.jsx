@@ -15,6 +15,7 @@ resource.addResource([
       image: {
         type: 'png',
         url: 'https://gw.alicdn.com/tfs/TB1DNzoOvb2gK0jSZK9XXaEgFXa-658-1152.webp',
+        // require('static/img/bg.png')
       },
     },
     preload: true,
@@ -109,23 +110,23 @@ export default function Home() {
     let touched = false
     let prePosition = { x: 0, y: 0 }
     evt.on('touchstart', e => {
-      console.log(e)
-      console.log('touchstart')
+      // console.log(e)
+      // console.log('touchstart')
       prePosition = e.data.position
       touched = true
     })
     evt.on('touchend', e => {
-      console.log('touchend')
+      // console.log('touchend')
       touched = false
     })
     evt.on('touchmove', e => {
       if (touched) {
         const { gameObject, data } = e
         const { transform } = gameObject
-        console.log('touchmove')
-        console.log('e', e)
-        console.log('gameObject', gameObject)
-        console.log('data', data)
+        // console.log('touchmove')
+        // console.log('e', e)
+        // console.log('gameObject', gameObject)
+        // console.log('data', data)
 
         const position = {
           x: transform.position.x + data.position.x - prePosition.x,
@@ -159,34 +160,9 @@ export default function Home() {
 
   return (
     <>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.y = gameObject2.components[0].position.y - 10
-        }}
-      >
-        上
-      </h1>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.y = gameObject2.components[0].position.y + 10
-        }}
-      >
-        下
-      </h1>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.x = gameObject2.components[0].position.x - 10
-        }}
-      >
-        左
-      </h1>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.x = gameObject2.components[0].position.x + 10
-        }}
-      >
-        右
-      </h1>
+      <div className="home_bg">
+        <div className="home_top">1 2 3</div>
+      </div>
     </>
   )
 }

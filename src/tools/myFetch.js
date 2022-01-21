@@ -1,6 +1,6 @@
 // const baseUrl = 'https://mock.yonyoucloud.com/mock/19838/dddcz-game-house'
-// export const baseUrl = 'http://106.15.32.115:8095/api'
-export const baseUrl = 'http://127.0.0.1:8080/api'
+export const baseUrl = 'http://106.15.32.115:8095/api'
+// export const baseUrl = 'http://127.0.0.1:8080/api'
 
 function http(url, params, headers, method) {
   const fParams = params || {}

@@ -23,4 +23,37 @@ resource.addResource([
     },
     preload: true,
   },
+  {
+    name: 'seaBg',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/sea-background.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'ship',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/ship-body.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'shipLight',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/ship-light.png',
+      },
+    },
+    preload: true,
+  },
 ])

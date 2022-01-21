@@ -7,36 +7,10 @@ import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
 
 import './index.css'
 
-resource.addResource([
-  {
-    name: 'image1',
-    type: RESOURCE_TYPE.IMAGE,
-    src: {
-      image: {
-        type: 'png',
-        url: 'https://gw.alicdn.com/tfs/TB1DNzoOvb2gK0jSZK9XXaEgFXa-658-1152.webp',
-        // require('static/img/bg.png')
-      },
-    },
-    preload: true,
-  },
-  {
-    name: 'image2',
-    type: RESOURCE_TYPE.IMAGE,
-    src: {
-      image: {
-        type: 'png',
-        url: 'https://gw.alicdn.com/tfs/TB15Upxqk9l0K4jSZFKXXXFjpXa-750-1624.jpg',
-      },
-    },
-    preload: true,
-  },
-])
-
 export default function Home() {
-  let gameObject
-  let gameObject2
-  let gameObject3
+  let seaBg
+  let ship
+  let shipLight
 
   useEffect(() => {
     const game = new Game({
@@ -60,108 +34,102 @@ export default function Home() {
     })
 
     game.addSystem(new ImgSystem()) // 给游戏添加渲染图片的能力
-
-    gameObject = new GameObject('gameObj1', {
+    seaBg = new GameObject('seaBg', {
       size: {
-        width: 658,
-        height: 1152,
+        width: 390,
+        height: 844,
       },
     })
-    gameObject2 = new GameObject('gameObj2', {
+    ship = new GameObject('ship', {
       size: {
-        width: 50,
-        height: 50,
+        width: 57,
+        height: 111,
+      },
+      position: {
+        x: 166,
+        y: 673,
       },
     })
-    gameObject3 = new GameObject('gameObj2', {
+    shipLight = new GameObject('shipLight', {
       size: {
-        width: 50,
-        height: 50,
+        width: 165,
+        height: 190,
+      },
+      position: {
+        x: 112,
+        y: 624,
       },
     })
-    gameObject.addComponent(
+    seaBg.addComponent(
       new Img({
-        resource: 'image1',
+        resource: 'seaBg',
       }),
     )
-
-    gameObject2.addComponent(
+    ship.addComponent(
       new Img({
-        resource: 'image2',
+        resource: 'ship',
       }),
     )
-    gameObject3.addComponent(
+    shipLight.addComponent(
       new Img({
-        resource: 'image2',
+        resource: 'shipLight',
       }),
     )
-    const evt = gameObject2.addComponent(
-      new Event({
-        // 使用这个属性设置交互事件可以触发的区域，骨骼动画有所变差，可以临时在当前游戏对象下添加一个同类型同属性的Graphic查看具体点击位置。
-        hitArea: {
-          type: HIT_AREA_TYPE.Polygon,
-          style: {
-            paths: [0, 0, 0, 150, 150, 150, 150, 0],
-          },
-        },
-      }),
-    )
+    // const evt = ship.addComponent(
+    //   new Event({
+    //     // 使用这个属性设置交互事件可以触发的区域，骨骼动画有所变差，可以临时在当前游戏对象下添加一个同类型同属性的Graphic查看具体点击位置。
+    //     hitArea: {
+    //       type: HIT_AREA_TYPE.Polygon,
+    //       style: {
+    //         paths: [0, 0, 0, 150, 150, 150, 150, 0],
+    //       },
+    //     },
+    //   }),
+    // )
 
-    let touched = false
-    let prePosition = { x: 0, y: 0 }
-    evt.on('touchstart', e => {
-      // console.log(e)
-      // console.log('touchstart')
-      prePosition = e.data.position
-      touched = true
-    })
-    evt.on('touchend', e => {
-      // console.log('touchend')
-      touched = false
-    })
-    evt.on('touchmove', e => {
-      if (touched) {
-        const { gameObject, data } = e
-        const { transform } = gameObject
-        // console.log('touchmove')
-        // console.log('e', e)
-        // console.log('gameObject', gameObject)
-        // console.log('data', data)
+    // let touched = false
+    // let prePosition = { x: 0, y: 0 }
+    // evt.on('touchstart', e => {
+    //   // console.log(e)
+    //   // console.log('touchstart')
+    //   prePosition = e.data.position
+    //   touched = true
+    // })
+    // evt.on('touchend', e => {
+    //   // console.log('touchend')
+    //   touched = false
+    // })
+    // evt.on('touchmove', e => {
+    //   if (touched) {
+    //     const { gameObject, data } = e
+    //     const { transform } = gameObject
 
-        const position = {
-          x: transform.position.x + data.position.x - prePosition.x,
-          y: transform.position.y + data.position.y - prePosition.y,
-        }
-        prePosition = e.data.position
+    //     const position = {
+    //       x: transform.position.x + data.position.x - prePosition.x,
+    //       y: transform.position.y + data.position.y - prePosition.y,
+    //     }
+    //     prePosition = e.data.position
 
-        transform.position = position
-      }
-      const move = gameObject3.addComponent(
-        new Move({
-          speed: {
-            x: 250,
-            y: 200,
-          },
-        }),
-      )
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          game.pause()
-        } else {
-          game.resume()
-        }
-      })
-    })
+    //     transform.position = position
+    //   }
+    //   document.addEventListener('visibilitychange', () => {
+    //     if (document.hidden) {
+    //       game.pause()
+    //     } else {
+    //       game.resume()
+    //     }
+    //   })
+    // })
 
-    game.scene.addChild(gameObject) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
-    game.scene.addChild(gameObject2) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
-    game.scene.addChild(gameObject3) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
+    game.scene.addChild(seaBg) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
+    game.scene.addChild(shipLight)
+    game.scene.addChild(ship)
   }, [])
 
   return (
     <>
       <div className="home_bg">
-        <div className="home_top">1 2 3</div>
+        <div className="home_top"></div>
       </div>
     </>
   )

@@ -2,6 +2,17 @@ import { resource, RESOURCE_TYPE } from '@eva/eva.js'
 
 resource.addResource([
   {
+    name: 'imageName',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'https://gw.alicdn.com/imgextra/i2/O1CN01RXLKdU1NhImlj0VPt_!!6000000001601-2-tps-90-90.png',
+      },
+    },
+    preload: true,
+  },
+  {
     name: 'image1',
     type: RESOURCE_TYPE.IMAGE,
     src: {

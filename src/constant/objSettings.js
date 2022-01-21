@@ -6,8 +6,8 @@ export const seaBgOgj = {
 export const shipOgj = {
   w: 57,
   h: 111,
-  oW: (shipLightObj.w / 2).toFixed(0),
-  oH: seaBgOgj.h - (shipLightObj.h / 2).toFixed(0) - footH,
+  oW: (seaBgOgj.w / 2).toFixed(0),
+  oH: seaBgOgj.h - (shipOgj.h / 2).toFixed(0) - footH,
 }
 export const shipLightObj = {
   w: 165,

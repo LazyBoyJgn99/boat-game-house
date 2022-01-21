@@ -8,6 +8,9 @@ import { Physics, PhysicsType, PhysicsSystem } from '@eva/plugin-matterjs'
 
 import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
 
+import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
+import gameInfo from '../../constant/game'
+
 import './index.css'
 
 export default function Home() {
@@ -16,35 +19,7 @@ export default function Home() {
   let shipLight
 
   useEffect(() => {
-    const game = new Game({
-      frameRate: 60, // 可选，游戏帧率，默认60
-      autoStart: true, // 可选，自动开始
-      transparent: false,
-      resolution: window.devicePixelRatio, // 可选, 如果是2倍图设计 可以除以2
-      enableScroll: true, // 允许页面滚动
-      renderType: 0, // 0:自动判断，1: WebGL，2:Canvas，建议android6.1 ios9 以下使用Canvas，需业务判断。z
-      systems: [
-        new RendererSystem({
-          canvas: document.querySelector('#canvas'),
-          width: 390,
-          height: 844,
-        }),
-        new EventSystem({
-          // moveWhenInside: true // 代表只有在元素内部才会执行move事件，默认为false
-        }),
-        new ImgSystem(),
-        new PhysicsSystem({
-          resolution: 2, // Keep the resolution of the RendererSystem consistent
-          isTest: true, // Whether to enable debugging mode
-          element: document.querySelector('.debugger'), // Mount point of canvas node in debug mode
-          world: {
-            gravity: {
-              y: 5, // gravity
-            },
-          },
-        }),
-      ],
-    })
+    const { game } = gameInfo
 
     game.addSystem(new ImgSystem()) // 给游戏添加渲染图片的能力
     seaBg = new GameObject('seaBg', {
@@ -70,8 +45,8 @@ export default function Home() {
         height: shipLightObj.h,
       },
       position: {
-        x: ((seaBgOgj.w - shipLightObj.w) / 2).toFixed(0),
-        y: seaBgOgj.h - shipLightObj.h - footH,
+        x: shipOgj.oW - (shipLightObj.w / 2).toFixed(0),
+        y: shipOgj.oH - (shipLightObj.h / 2).toFixed(0),
       },
     })
     seaBg.addComponent(

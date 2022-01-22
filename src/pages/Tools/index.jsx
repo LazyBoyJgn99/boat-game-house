@@ -422,10 +422,10 @@ class Move extends Component {
     this.gameObject.transform.position.x += this.speed.x * (e.deltaTime / 1000)
     this.gameObject.transform.position.y += this.speed.y * (e.deltaTime / 1000)
     if (position.x >= 390 * 2 || position.x <= 0) {
-      game.scene.removeChild(this.gameObject)
+      this.game.scene.removeChild(this.gameObject)
     }
     if (position.y >= 844 * 2 || position.y <= 0) {
-      game.scene.removeChild(this.gameObject)
+      this.game.scene.removeChild(this.gameObject)
     }
   }
 

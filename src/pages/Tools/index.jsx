@@ -16,6 +16,7 @@ export default function Tools() {
   let shipLight
   let physics
   let touchX
+  let touchY
 
   /**
    * 制造波浪
@@ -26,8 +27,10 @@ export default function Tools() {
     x = -100,
     y = 800,
     speed = 200,
+    speedX = 200,
+    speedY = 200,
     speedC = 25,
-    rotation = 0,
+    rotation = 0, // 3.14159 是180度
   }) => {
     const { container } = gameInfo
 
@@ -60,19 +63,21 @@ export default function Tools() {
     setTimeout(() => {
       container.removeChild(block)
     }, 15000)
-    const move = speed => {
-      block.transform.position.x += speed / speedC
-      if (speed === 0) {
+    const move = (speedX, speedY) => {
+      block.transform.position.x += (speedX || speed) / speedC
+      block.transform.position.y += (speedY || speed) / speedC
+
+      if (speedX === 0 || speedY === 0) {
         container.removeChild(block)
         return
       }
       requestAnimationFrame(() => {
-        move(speed > 0 ? speed - 1 : speed + 1)
+        move(speedX > 0 ? speedX - 1 : speedX + 1, speedY > 0 ? speedY - 1 : speedY + 1)
       })
     }
     container.addChild(block)
     requestAnimationFrame(() => {
-      move(speed)
+      move(speedX, speedY)
     })
   }
 
@@ -256,23 +261,32 @@ export default function Tools() {
         }}
         onTouchStart={e => {
           touchX = e.changedTouches[0].clientX
+          touchY = e.changedTouches[0].clientY
         }}
         onTouchEnd={e => {
           const moveX = e.changedTouches[0].clientX - touchX
-          if (moveX < -500) {
+          const moveY = e.changedTouches[0].clientY - touchY
+          const tan = moveX > 0 ? 0 : -3.14
+
+          if (moveX < -300) {
             console.log('向左')
             createOceanCurrentPattern({
               x: 750,
               y: 800,
-              speed: -200,
-              rotation: 3.15,
+              speedX: moveX / 2,
+              speedY: moveY / 2,
+              rotation: Math.atan(moveY / moveX) * 2 + tan,
             })
             movePhy(ship, 50, 'x')
             moveObj(shipLight, 50, 'x')
           }
-          if (moveX > 500) {
+          if (moveX > 300) {
             console.log('向右')
-            createOceanCurrentPattern({})
+            createOceanCurrentPattern({
+              speedX: moveX / 2,
+              speedY: moveY / 2,
+              rotation: Math.atan(moveY / moveX) * 2 + tan,
+            })
             movePhy(ship, -50, 'x')
             moveObj(shipLight, -50, 'x')
           }

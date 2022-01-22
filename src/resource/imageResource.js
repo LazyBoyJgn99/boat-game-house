@@ -145,6 +145,17 @@ resource.addResource([
     preload: true,
   },
   {
+    name: 'cloudShadow1',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/cloud-shadow-1.png',
+      },
+    },
+    preload: true,
+  },
+  {
     name: 'oceanCurrentPattern',
     type: RESOURCE_TYPE.IMAGE,
     src: {

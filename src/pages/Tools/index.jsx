@@ -238,7 +238,7 @@ export default function Tools() {
         },
       })
 
-      const cloudShadow = new GameObject('cloud-shadow', {
+      const cloudShadow = new GameObject('cloudShadow1', {
         size: {
           width: 160,
           height: 80,
@@ -274,7 +274,7 @@ export default function Tools() {
 
       cloudShadow.addComponent(
         new Img({
-          resource: 'cloud-shadow-1',
+          resource: 'cloudShadow1',
         }),
       )
 

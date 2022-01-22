@@ -142,6 +142,9 @@ export default function Tools() {
             x: 0,
             y: 0,
           },
+          collisionFilter: {
+            category: 0x0001,
+          },
         },
         stopRotation: true,
       }),
@@ -162,6 +165,7 @@ export default function Tools() {
     container.addChild(ship)
 
     const blockImageNames = ['reef', 'fish1', 'shark']
+
     const genBlock = () => {
       // console.log('开始添加')
       const block = new GameObject('block', {
@@ -171,7 +175,7 @@ export default function Tools() {
         },
         position: {
           x: Math.floor(Math.random() * 390),
-          y: 0,
+          y: -80,
         },
       })
       block.addComponent(
@@ -184,9 +188,9 @@ export default function Tools() {
           zIndex: 3,
         }),
       )
-      physics = block.addComponent(
+      const physics = block.addComponent(
         new Physics({
-          type: PhysicsType.RECTANGLE, // PhysicsType.POLYGON,
+          type: PhysicsType.RECTANGLE,
           bodyOptions: {
             isStatic: false,
             // restitution: 0,
@@ -197,25 +201,112 @@ export default function Tools() {
               x: 0,
               y: 0,
             },
+            collisionFilter: {
+              category: 0x0002,
+              mask: 0x0001,
+            },
           },
           stopRotation: false,
         }),
       )
 
-      physics.on('collisionStart', () => {
-        // console.log('啊，撞到了')
+      physics.on('collisionStart', (obj1, obj2) => {
+        console.log('啊，撞到了', obj1, obj2)
+        game.scene.removeChild(block)
       })
-      container.addChild(block)
+      game.scene.addChild(block)
 
-      // 存在10秒后自动清除
       setTimeout(() => {
-        container.removeChild(block)
-      }, 10000)
-      setTimeout(() => {
-        requestAnimationFrame(genBlock)
-      }, 1500)
+        if (block) {
+          game.scene.removeChild(block)
+        }
+      }, 20000)
     }
-    requestAnimationFrame(genBlock)
+
+    const genCloud = () => {
+      const positionX = Math.floor(Math.random() * 390)
+      const speedY = Math.floor(Math.random() * 200)
+
+      const cloud = new GameObject('cloud', {
+        size: {
+          width: 160,
+          height: 80,
+        },
+        position: {
+          x: positionX,
+          y: 0,
+        },
+      })
+
+      const cloudShadow = new GameObject('cloud-shadow', {
+        size: {
+          width: 160,
+          height: 80,
+        },
+        position: {
+          x: positionX + 28,
+          y: 28,
+        },
+      })
+
+      cloud.addComponent(
+        new Img({
+          resource: 'cloud1',
+        }),
+      )
+
+      cloud.addComponent(
+        new Move({
+          game,
+          genObject: cloud,
+          speed: {
+            x: 0,
+            y: speedY,
+          },
+        }),
+      )
+
+      cloud.addComponent(
+        new Render({
+          zIndex: 5,
+        }),
+      )
+
+      cloudShadow.addComponent(
+        new Img({
+          resource: 'cloud-shadow-1',
+        }),
+      )
+
+      cloudShadow.addComponent(
+        new Move({
+          game,
+          genObject: cloudShadow,
+          speed: {
+            x: 0,
+            y: speedY,
+          },
+        }),
+      )
+      cloudShadow.addComponent(
+        new Render({
+          zIndex: 4,
+        }),
+      )
+
+      game.scene.addChild(cloudShadow)
+      game.scene.addChild(cloud)
+    }
+
+    const genObject = () => {
+      genBlock()
+      genCloud()
+      setTimeout(() => {
+        requestAnimationFrame(genObject)
+      }, 2500)
+    }
+
+    requestAnimationFrame(genObject)
   }, [])
 
   /**
@@ -310,4 +401,43 @@ export default function Tools() {
       </div>
     </>
   )
+}
+class Move extends Component {
+  static componentName = 'Move'
+
+  speed = {
+    // 移动速度
+    x: 100,
+    y: 200,
+  }
+
+  init(obj) {
+    Object.assign(this, obj)
+  }
+
+  update(e) {
+    // 每秒 N 像素
+    // console.log(e)
+    const { position } = this.gameObject.transform
+    this.gameObject.transform.position.x += this.speed.x * (e.deltaTime / 1000)
+    this.gameObject.transform.position.y += this.speed.y * (e.deltaTime / 1000)
+    if (position.x >= 390 * 2 || position.x <= 0) {
+      game.scene.removeChild(this.gameObject)
+    }
+    if (position.y >= 844 * 2 || position.y <= 0) {
+      game.scene.removeChild(this.gameObject)
+    }
+  }
+
+  onPause() {
+    this.oldSpeed = this.speed
+    this.speed = {
+      x: 0,
+      y: 0,
+    }
+  }
+
+  onResume() {
+    this.speed = this.oldSpeed
+  }
 }

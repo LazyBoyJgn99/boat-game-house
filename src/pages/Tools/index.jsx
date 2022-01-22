@@ -274,7 +274,7 @@ export default function Tools() {
 
       cloudShadow.addComponent(
         new Img({
-          resource: 'cloud-shadow-1',
+          resource: 'cloudShadow1',
         }),
       )
 

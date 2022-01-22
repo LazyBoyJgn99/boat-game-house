@@ -14,6 +14,8 @@ import './index.css'
 export default function Tools() {
   let seaBg
   let ship
+  let coast
+  let shipPhysical
   let shipLight
   let physics
   let touchX
@@ -123,6 +125,17 @@ export default function Tools() {
         height: seaBgObj.h,
       },
     })
+    coast = new GameObject('ship', {
+      size: {
+        width: seaBgObj.w,
+        height: 20,
+      },
+      position: {
+        x: +((seaBgObj.w - shipObj.w) / 2).toFixed(0),
+        y: seaBgObj.h - 250,
+      },
+    })
+
     ship = new GameObject('ship', {
       size: {
         width: shipObj.w,
@@ -160,13 +173,13 @@ export default function Tools() {
       }),
     )
 
-    ship.addComponent(
+    shipPhysical = ship.addComponent(
       new Physics({
         type: PhysicsType.RECTANGLE,
         bodyOptions: {
-          isStatic: true,
+          isStatic: false,
           // restitution: 0,
-          frictionAir: 0,
+          frictionAir: 0.01,
           friction: 0.06,
           frictionStatic: 0.3,
           force: {
@@ -175,6 +188,22 @@ export default function Tools() {
           },
           collisionFilter: {
             category: 0x0001,
+            mask: 0x0010,
+            group: -2,
+          },
+        },
+        stopRotation: true,
+      }),
+    )
+    coast.addComponent(
+      new Physics({
+        type: PhysicsType.RECTANGLE,
+        bodyOptions: {
+          isStatic: true,
+          collisionFilter: {
+            category: 0x0010,
+            mask: 0x0001,
+            group: -9,
           },
         },
         stopRotation: true,
@@ -194,6 +223,9 @@ export default function Tools() {
     container.addChild(seaBg) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
     container.addChild(shipLight)
     container.addChild(ship)
+    container.addChild(coast)
+
+    shipLightFollow()
 
     const blockImageNames = ['reef', 'fish1', 'shark']
 
@@ -234,8 +266,9 @@ export default function Tools() {
               y: 0,
             },
             collisionFilter: {
-              category: 0x0002,
+              category: 0x0010,
               mask: 0x0001,
+              group: -3,
             },
           },
           stopRotation: false,
@@ -347,6 +380,13 @@ export default function Tools() {
     genMask(game)
   }, [])
 
+  const shipLightFollow = () => {
+    setInterval(() => {
+      shipLight.transform.position.x = ship.transform.position.x - shipLightObj.w / 2 + shipObj.w / 2
+      shipLight.transform.position.y = ship.transform.position.y - shipLightObj.h / 2 + shipObj.h / 2
+    }, 10)
+  }
+
   /**
    * 移动物理单位
    * @param {*} phyObj
@@ -355,18 +395,18 @@ export default function Tools() {
    */
   const movePhy = (phyObj = {}, num = 50, pos = 'y') => {
     const { components } = phyObj
+    if (pos === 'y') {
+      // eslint-disable-next-line no-param-reassign
+      phyObj.body.force.y = -2
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      phyObj.body.force.x = num > 0 ? -0.3 : 0.3
+    }
 
-    // 视图位置
-    components[3].body.position[pos] -= num
-    // 物理位置
-    // 四边形
-    components[3].body.bounds.max[pos] -= num
-    components[3].body.bounds.min[pos] -= num
-    // 多边形 待验证
-    components[3].body.vertices[0][pos] -= num
-    components[3].body.vertices[1][pos] -= num
-    components[3].body.vertices[2][pos] -= num
-    components[3].body.vertices[3][pos] -= num
+    // // 物理位置
+    // components[2].body.positionPrev[pos] -= num
+    // // 视图位置
+    // components[2].body.position[pos] -= num
   }
   /**
    * 移动单位
@@ -385,7 +425,7 @@ export default function Tools() {
         onClick={e => {
           console.log('clk', e)
           console.log(ship)
-          movePhy(ship)
+          movePhy(shipPhysical)
           moveObj(shipLight)
         }}
         onTouchStart={e => {
@@ -406,7 +446,7 @@ export default function Tools() {
               speedY: moveY / 2,
               rotation: Math.atan(moveY / moveX) * 2 + tan,
             })
-            movePhy(ship, 50, 'x')
+            movePhy(shipPhysical, 50, 'x')
             moveObj(shipLight, 50, 'x')
           }
           if (moveX > 300) {
@@ -416,7 +456,7 @@ export default function Tools() {
               speedY: moveY / 2,
               rotation: Math.atan(moveY / moveX) * 2 + tan,
             })
-            movePhy(ship, -50, 'x')
+            movePhy(shipPhysical, -50, 'x')
             moveObj(shipLight, -50, 'x')
           }
         }}

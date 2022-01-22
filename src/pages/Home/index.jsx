@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { GameObject, Component } from '@eva/eva.js'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Physics, PhysicsType } from '@eva/plugin-matterjs'
+// import { Transition, TransitionSystem } from '@eva/plugin-transition'
 
 import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings'
 import gameInfo from '../../constant/game'
@@ -174,6 +175,49 @@ export default function Home() {
       }, 1500)
     }
     requestAnimationFrame(genBlock)
+
+    const getCloud = () => {
+      const x = -50 - Math.floor(Math.random() * 150)
+      const flor = Math.floor(Math.random() * 2) === 1
+      const type = Math.floor(Math.random() * 2) === 2
+
+      const cloud = new GameObject('cloud', {
+        size: {
+          width: 412,
+          height: 238,
+        },
+        position: {
+          x: flor ? x : x + 600,
+          y: 0, // -238 - 50
+        },
+      })
+      cloud.addComponent(
+        new Img({
+          resource: type ? 'cloud1' : 'cloud2',
+        }),
+      )
+      const cloud2 = new GameObject('cloud2', {
+        size: {
+          width: 412,
+          height: 238,
+        },
+        position: {
+          x: (flor ? x : x + 600) + 50,
+          y: 50, // -238,
+        },
+      })
+      cloud2.addComponent(
+        new Img({
+          resource: type ? 'cloudShadow1' : 'cloudShadow2',
+        }),
+      )
+      game.scene.addChild(cloud2)
+      game.scene.addChild(cloud)
+      // setTimeout(() => {
+      //   requestAnimationFrame(getCloud)
+      // }, 5000)
+    }
+    requestAnimationFrame(getCloud)
   }, [])
 
   return (
@@ -204,12 +248,12 @@ class Move extends Component {
     const { position } = this.gameObject.transform
     this.gameObject.transform.position.x += this.speed.x * (e.deltaTime / 1000)
     this.gameObject.transform.position.y += this.speed.y * (e.deltaTime / 1000)
-    if (position.x >= 390 || position.x <= 0) {
-      this.speed.x = -this.speed.x
-    }
-    if (position.y >= 844 || position.y <= 0) {
-      this.speed.y = -this.speed.y
-    }
+    // if (position.x >= 390 || position.x <= 0) {
+    //   this.speed.x = -this.speed.x
+    // }
+    // if (position.y >= 844 || position.y <= 0) {
+    //   this.speed.y = -this.speed.y
+    // }
   }
 
   onPause() {

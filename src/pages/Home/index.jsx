@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { GameObject, Component } from '@eva/eva.js'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Physics, PhysicsType } from '@eva/plugin-matterjs'
-// import { Transition, TransitionSystem } from '@eva/plugin-transition'
+import { Transition, TransitionSystem } from '@eva/plugin-transition'
 
 import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings'
 import gameInfo from '../../constant/game'
@@ -188,7 +188,7 @@ export default function Home() {
         },
         position: {
           x: flor ? x : x + 600,
-          y: 0, // -238 - 50
+          y: -238 - 50,
         },
       })
       cloud.addComponent(
@@ -196,6 +196,27 @@ export default function Home() {
           resource: type ? 'cloud1' : 'cloud2',
         }),
       )
+      const animation = cloud.addComponent(new Transition())
+      animation.group = {
+        move: [
+          {
+            name: 'position.y',
+            component: cloud.transform,
+            values: [
+              {
+                time: 0,
+                value: -238 - 50,
+                tween: 'linear',
+              },
+              {
+                time: 50000,
+                value: seaBgObj.h,
+              },
+            ],
+          },
+        ],
+      }
+      animation.play('move', 1)
       const cloud2 = new GameObject('cloud2', {
         size: {
           width: 412,
@@ -203,7 +224,7 @@ export default function Home() {
         },
         position: {
           x: (flor ? x : x + 600) + 50,
-          y: 50, // -238,
+          y: -238,
         },
       })
       cloud2.addComponent(
@@ -211,11 +232,32 @@ export default function Home() {
           resource: type ? 'cloudShadow1' : 'cloudShadow2',
         }),
       )
+      const animation2 = cloud2.addComponent(new Transition())
+      animation2.group = {
+        move: [
+          {
+            name: 'position.y',
+            component: cloud2.transform,
+            values: [
+              {
+                time: 0,
+                value: -238,
+                tween: 'linear',
+              },
+              {
+                time: 50000,
+                value: seaBgObj.h + 50,
+              },
+            ],
+          },
+        ],
+      }
+      animation2.play('move', 1)
       game.scene.addChild(cloud2)
       game.scene.addChild(cloud)
-      // setTimeout(() => {
-      //   requestAnimationFrame(getCloud)
-      // }, 5000)
+      setTimeout(() => {
+        requestAnimationFrame(getCloud)
+      }, 30000)
     }
     requestAnimationFrame(getCloud)
   }, [])

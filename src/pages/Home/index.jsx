@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
-import { Game, GameObject, Component } from '@eva/eva.js'
-import { RendererSystem } from '@eva/plugin-renderer'
+import { GameObject, Component } from '@eva/eva.js'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
-import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
-import { Physics, PhysicsType, PhysicsSystem } from '@eva/plugin-matterjs'
+import { Physics, PhysicsType } from '@eva/plugin-matterjs'
 
-import { seaBgOgj, shipOgj, shipLightObj, footH } from '../../constant/objSettings'
-
-import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings.js'
+import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings'
 import gameInfo from '../../constant/game'
 
 import './index.css'
@@ -133,7 +129,7 @@ export default function Home() {
     game.scene.addChild(ship)
 
     const blockImageNames = ['reef', 'fish1', 'shark']
-    setInterval(() => {
+    const genBlock = () => {
       // console.log('开始添加')
       const block = new GameObject('block', {
         size: {
@@ -172,7 +168,16 @@ export default function Home() {
         console.log('啊，撞到了')
       })
       game.scene.addChild(block)
-    }, 1500)
+
+      setTimeout(() => {
+        game.scene.removeChild(block)
+      }, 20000)
+
+      setTimeout(() => {
+        requestAnimationFrame(genBlock)
+      }, 1500)
+    }
+    requestAnimationFrame(genBlock)
   }, [])
 
   return (

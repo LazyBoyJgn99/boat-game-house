@@ -1,10 +1,11 @@
-import { Game } from '@eva/eva.js'
+import { Game, GameObject } from '@eva/eva.js'
 import { RendererSystem } from '@eva/plugin-renderer'
 import { ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { PhysicsSystem } from '@eva/plugin-matterjs'
 import { GraphicsSystem } from '@eva/plugin-renderer-graphics'
 import { TextSystem } from '@eva/plugin-renderer-text'
 import { EventSystem } from '@eva/plugin-renderer-event'
+import { Render, RenderSystem } from '@eva/plugin-renderer-render'
 
 const gameInfo = {
   game: new Game({
@@ -21,6 +22,7 @@ const gameInfo = {
         height: 1334,
         resolution: 2, // Keep the resolution of the RendererSystem consistent
       }),
+      new RenderSystem(),
       new ImgSystem(),
       new PhysicsSystem({
         resolution: 2, // Keep the resolution of the RendererSystem consistent
@@ -35,8 +37,28 @@ const gameInfo = {
       new GraphicsSystem(),
       new TextSystem(),
       new EventSystem(),
+      new Render({
+        sortableChildren: true,
+      }),
     ],
   }),
+  container: new GameObject('container', {
+    size: {
+      width: 750,
+      height: 1334,
+    },
+    position: {
+      x: 0,
+      y: 0,
+    },
+    origin: { x: 0, y: 0 },
+  }),
 }
+
+gameInfo.container.addComponent(
+  new Render({
+    sortableChildren: true,
+  }),
+)
 
 export default gameInfo

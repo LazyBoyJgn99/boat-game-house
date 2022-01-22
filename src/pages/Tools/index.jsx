@@ -1,77 +1,191 @@
 import React, { useState, useEffect } from 'react'
 
-import { Game, GameObject, Component } from '@eva/eva.js'
-import { RendererSystem } from '@eva/plugin-renderer'
+import { GameObject, Component } from '@eva/eva.js'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
-import { Physics, PhysicsSystem, PhysicsType } from '@eva/plugin-matterjs'
-import { Text, TextSystem } from '@eva/plugin-renderer-text'
-import { Graphics, GraphicsSystem } from '@eva/plugin-renderer-graphics'
-import { Event, EventSystem, HIT_AREA_TYPE } from '@eva/plugin-renderer-event'
+import { Physics, PhysicsType } from '@eva/plugin-matterjs'
+import { Render } from '@eva/plugin-renderer-render'
 
+import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings'
 import gameInfo from '../../constant/game'
 
 import './index.css'
 
 export default function Tools() {
-  let gameObject
-  let gameObject2
-  let gameObject3
+  let seaBg
+  let ship
+  let shipLight
+  let physics
+  let touchX
+
+  /**
+   * 制造波浪
+   */
+  const createOceanCurrentPattern = ({
+    width = 360,
+    height = 720,
+    x = -100,
+    y = 800,
+    speed = 200,
+    speedC = 25,
+    rotation = 0,
+  }) => {
+    const { container } = gameInfo
+
+    const block = new GameObject('oceanCurrent', {
+      origin: {
+        x: 0.5,
+        y: 0.5,
+      },
+      size: {
+        width,
+        height,
+      },
+      position: {
+        x,
+        y,
+      },
+      rotation,
+    })
+    block.addComponent(
+      new Img({
+        resource: 'oceanCurrentPattern',
+      }),
+    )
+    block.addComponent(
+      new Render({
+        zIndex: 2,
+      }),
+    )
+    // 存在10秒后自动清除
+    setTimeout(() => {
+      container.removeChild(block)
+    }, 15000)
+    const move = speed => {
+      block.transform.position.x += speed / speedC
+      if (speed === 0) {
+        container.removeChild(block)
+        return
+      }
+      requestAnimationFrame(() => {
+        move(speed > 0 ? speed - 1 : speed + 1)
+      })
+    }
+    container.addChild(block)
+    requestAnimationFrame(() => {
+      move(speed)
+    })
+  }
 
   useEffect(() => {
-    const { game } = gameInfo
-    const { physics } = createPlayer()
-    const { evt } = createButton()
-    const walls = [createWall(0, 0, 20, 1000), createWall(750 - 20, 0, 20, 1000), createWall(0, 1000 - 20, 750, 20)]
+    const { game, container } = gameInfo
 
-    physics.on('collisionStart', () => {
-      DrawRed()
+    game.scene.addChild(container)
+
+    seaBg = new GameObject('seaBg', {
+      size: {
+        width: seaBgObj.w,
+        height: seaBgObj.h,
+      },
     })
-    physics.on('collisionEnd', () => {
-      DrawGreen()
+    ship = new GameObject('ship', {
+      size: {
+        width: shipObj.w,
+        height: shipObj.h,
+      },
+      position: {
+        x: +((seaBgObj.w - shipObj.w) / 2).toFixed(0),
+        y: seaBgObj.h - shipObj.h - footH,
+      },
     })
 
-    evt.on('tap', () => {
-      physics.body.force.y = -10
+    shipLight = new GameObject('shipLight', {
+      size: {
+        width: shipLightObj.w,
+        height: shipLightObj.h,
+      },
+      position: {
+        x: shipObj.oW - (shipLightObj.w / 2).toFixed(0),
+        y: shipObj.oH - (shipLightObj.h / 2).toFixed(0),
+      },
     })
+    seaBg.addComponent(
+      new Img({
+        resource: 'seaBg',
+      }),
+    )
+    ship.addComponent(
+      new Img({
+        resource: 'ship',
+      }),
+    )
+    ship.addComponent(
+      new Render({
+        zIndex: 3,
+      }),
+    )
 
-    function DrawRed() {
-      walls.forEach(wall => {
-        wall.drawColor(0xff0000)
-      })
-    }
-    function DrawGreen() {
-      walls.forEach(wall => {
-        wall.drawColor(0x00ffff)
-      })
-    }
+    ship.addComponent(
+      new Physics({
+        type: PhysicsType.RECTANGLE,
+        bodyOptions: {
+          isStatic: true,
+          // restitution: 0,
+          frictionAir: 0,
+          friction: 0.06,
+          frictionStatic: 0.3,
+          force: {
+            x: 0,
+            y: 0,
+          },
+        },
+        stopRotation: true,
+      }),
+    )
+    shipLight.addComponent(
+      new Img({
+        resource: 'shipLight',
+      }),
+    )
+    shipLight.addComponent(
+      new Render({
+        zIndex: 2,
+      }),
+    )
 
-    function createPlayer() {
-      const image = new GameObject('image', {
-        size: { width: 240, height: 240 },
-        origin: { x: 0.5, y: 0.5 },
+    container.addChild(seaBg) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
+    container.addChild(shipLight)
+    container.addChild(ship)
+
+    const blockImageNames = ['reef', 'fish1', 'shark']
+    const genBlock = () => {
+      // console.log('开始添加')
+      const block = new GameObject('block', {
+        size: {
+          width: 80,
+          height: 80,
+        },
         position: {
-          x: 375,
-          y: 100,
-        },
-        scale: {
-          x: -1,
-          y: 1,
+          x: Math.floor(Math.random() * 390),
+          y: 0,
         },
       })
-
-      image.addComponent(
+      block.addComponent(
         new Img({
-          resource: 'imageName',
+          resource: blockImageNames[Math.floor(Math.random() * 3)],
         }),
       )
-
-      const physics = image.addComponent(
+      block.addComponent(
+        new Render({
+          zIndex: 3,
+        }),
+      )
+      physics = block.addComponent(
         new Physics({
-          type: PhysicsType.RECTANGLE,
+          type: PhysicsType.RECTANGLE, // PhysicsType.POLYGON,
           bodyOptions: {
             isStatic: false,
             // restitution: 0,
-            frictionAir: 0.1,
+            frictionAir: 0.5 + (Math.random() * 4) / 10,
             friction: 0.06,
             frictionStatic: 0.3,
             force: {
@@ -79,166 +193,107 @@ export default function Tools() {
               y: 0,
             },
           },
-          stopRotation: true,
+          stopRotation: false,
         }),
       )
-      game.scene.addChild(image)
 
-      return { physics }
-    }
-
-    function createWall(x, y, width, height) {
-      const go = new GameObject('graphics', {
-        position: { x: x + width / 2, y: y + height / 2 },
-        size: { width, height },
-        origin: { x: 0.5, y: 0.5 },
+      physics.on('collisionStart', () => {
+        // console.log('啊，撞到了')
       })
-      const graphics = go.addComponent(new Graphics())
-      graphics.graphics.beginFill(0x00ff00)
-      graphics.graphics.drawRect(0, 0, width, height)
+      container.addChild(block)
 
-      go.addComponent(
-        new Physics({
-          type: PhysicsType.RECTANGLE,
-          bodyOptions: {
-            isStatic: true, // Whether the object is still, any force acting on the object in a static state will not produce any effect
-            restitution: 0.1,
-            frictionAir: 0,
-            friction: 0,
-            frictionStatic: 0,
-            force: {
-              x: 0,
-              y: 0,
-            },
-          },
-          stopRotation: true, // default false, usually do not need to be set
-        }),
-      )
-      game.scene.addChild(go)
-
-      return {
-        drawColor(color) {
-          graphics.graphics.beginFill(color)
-          graphics.graphics.drawRect(0, 0, width, height)
-        },
-      }
+      // 存在10秒后自动清除
+      setTimeout(() => {
+        container.removeChild(block)
+      }, 10000)
+      setTimeout(() => {
+        requestAnimationFrame(genBlock)
+      }, 1500)
     }
-
-    function createButton() {
-      const textGO = new GameObject('text', {
-        origin: {
-          x: 0.5,
-          y: 0.5,
-        },
-        anchor: {
-          x: 0.5,
-          y: 0.5,
-        },
-      })
-      textGO.addComponent(
-        new Text({
-          text: 'Jump',
-          style: {
-            fill: 0xffffff,
-            fontSize: 50,
-          },
-        }),
-      )
-      const go = new GameObject('button', {
-        position: {
-          x: 750 - 30,
-          y: 1334 - 30,
-        },
-        origin: {
-          x: 1,
-          y: 1,
-        },
-      })
-      const { graphics } = go.addComponent(new Graphics())
-      graphics.beginFill(0x00ffff)
-      const w = 240
-      const h = 120
-      graphics.drawRoundedRect(0, 0, w, h)
-      go.transform.size.width = w
-      go.transform.size.height = h
-      go.addChild(textGO)
-      game.scene.addChild(go)
-
-      const evt = go.addComponent(new Event())
-      return { evt }
-    }
+    requestAnimationFrame(genBlock)
   }, [])
 
+  /**
+   * 移动物理单位
+   * @param {*} phyObj
+   * @param {*} num
+   * @param {*} pos
+   */
+  const movePhy = (phyObj = {}, num = 50, pos = 'y') => {
+    const { components } = phyObj
+
+    // 视图位置
+    components[3].body.position[pos] -= num
+    // 物理位置
+    // 四边形
+    components[3].body.bounds.max[pos] -= num
+    components[3].body.bounds.min[pos] -= num
+    // 多边形 待验证
+    components[3].body.vertices[0][pos] -= num
+    components[3].body.vertices[1][pos] -= num
+    components[3].body.vertices[2][pos] -= num
+    components[3].body.vertices[3][pos] -= num
+  }
+  /**
+   * 移动单位
+   * @param {*} phyObj
+   * @param {*} num
+   * @param {*} pos
+   */
+  const moveObj = (phyObj = {}, num = 50, pos = 'y') => {
+    const { components } = phyObj
+    components[0].position[pos] -= num
+  }
   return (
     <>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.y = gameObject2.components[0].position.y - 10
+      <div
+        className="home_bg"
+        onClick={e => {
+          console.log('clk', e)
+          console.log(ship)
+          movePhy(ship)
+          moveObj(shipLight)
+        }}
+        onTouchStart={e => {
+          touchX = e.changedTouches[0].clientX
+        }}
+        onTouchEnd={e => {
+          const moveX = e.changedTouches[0].clientX - touchX
+          if (moveX < -500) {
+            console.log('向左')
+            createOceanCurrentPattern({
+              x: 750,
+              y: 800,
+              speed: -200,
+              rotation: 3.15,
+            })
+            movePhy(ship, 50, 'x')
+            moveObj(shipLight, 50, 'x')
+          }
+          if (moveX > 500) {
+            console.log('向右')
+            createOceanCurrentPattern({})
+            movePhy(ship, -50, 'x')
+            moveObj(shipLight, -50, 'x')
+          }
         }}
       >
-        上
-      </h1>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.y = gameObject2.components[0].position.y + 10
-        }}
-      >
-        下
-      </h1>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.x = gameObject2.components[0].position.x - 10
-        }}
-      >
-        左
-      </h1>
-      <h1
-        onClick={() => {
-          gameObject2.transform.position.x = gameObject2.components[0].position.x + 10
-        }}
-      >
-        右
-      </h1>
+        {/* <div
+          className="home_btn"
+          onClick={() => {
+            console.log('111')
+            console.log(ship)
+            console.log(shipLight)
+
+            console.log(ship.components)
+
+            console.log(ship.transform.position)
+            // console.log()
+            movePhy(ship)
+            shipLight.components[0].position.y -= 10
+          }}
+        /> */}
+      </div>
     </>
   )
-}
-
-class Move extends Component {
-  static componentName = 'Move'
-
-  speed = {
-    // 移动速度
-    x: 100,
-    y: 200,
-  }
-
-  init(obj) {
-    Object.assign(this, obj)
-  }
-
-  update(e) {
-    // 每秒 N 像素
-    // console.log(e)
-    const { position } = this.gameObject.transform
-    this.gameObject.transform.position.x += this.speed.x * (e.deltaTime / 1000)
-    this.gameObject.transform.position.y += this.speed.y * (e.deltaTime / 1000)
-    if (position.x >= 390 || position.x <= 0) {
-      this.speed.x = -this.speed.x
-    }
-    if (position.y >= 844 || position.y <= 0) {
-      this.speed.y = -this.speed.y
-    }
-  }
-
-  onPause() {
-    this.oldSpeed = this.speed
-    this.speed = {
-      x: 0,
-      y: 0,
-    }
-  }
-
-  onResume() {
-    this.speed = this.oldSpeed
-  }
 }

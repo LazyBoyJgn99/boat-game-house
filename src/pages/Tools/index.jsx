@@ -13,6 +13,8 @@ export default function Tools() {
   let seaBg
   let ship
   let shipLight
+  let physics
+  let touchX
 
   useEffect(() => {
     const { game } = gameInfo
@@ -78,58 +80,13 @@ export default function Tools() {
         resource: 'shipLight',
       }),
     )
-    // const evt = ship.addComponent(
-    //   new Event({
-    //     // 使用这个属性设置交互事件可以触发的区域，骨骼动画有所变差，可以临时在当前游戏对象下添加一个同类型同属性的Graphic查看具体点击位置。
-    //     hitArea: {
-    //       type: HIT_AREA_TYPE.Polygon,
-    //       style: {
-    //         paths: [0, 0, 0, 150, 150, 150, 150, 0],
-    //       },
-    //     },
-    //   }),
-    // )
-
-    // let touched = false
-    // let prePosition = { x: 0, y: 0 }
-    // evt.on('touchstart', e => {
-    //   // console.log(e)
-    //   // console.log('touchstart')
-    //   prePosition = e.data.position
-    //   touched = true
-    // })
-    // evt.on('touchend', e => {
-    //   // console.log('touchend')
-    //   touched = false
-    // })
-    // evt.on('touchmove', e => {
-    //   if (touched) {
-    //     const { gameObject, data } = e
-    //     const { transform } = gameObject
-
-    //     const position = {
-    //       x: transform.position.x + data.position.x - prePosition.x,
-    //       y: transform.position.y + data.position.y - prePosition.y,
-    //     }
-    //     prePosition = e.data.position
-
-    //     transform.position = position
-    //   }
-    //   document.addEventListener('visibilitychange', () => {
-    //     if (document.hidden) {
-    //       game.pause()
-    //     } else {
-    //       game.resume()
-    //     }
-    //   })
-    // })
 
     game.scene.addChild(seaBg) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
     game.scene.addChild(shipLight)
     game.scene.addChild(ship)
 
     const blockImageNames = ['reef', 'fish1', 'shark']
-    setInterval(() => {
+    const genBlock = () => {
       // console.log('开始添加')
       const block = new GameObject('block', {
         size: {
@@ -146,9 +103,9 @@ export default function Tools() {
           resource: blockImageNames[Math.floor(Math.random() * 3)],
         }),
       )
-      const physics = block.addComponent(
+      physics = block.addComponent(
         new Physics({
-          type: PhysicsType.RECTANGLE,
+          type: PhysicsType.RECTANGLE, // PhysicsType.POLYGON,
           bodyOptions: {
             isStatic: false,
             // restitution: 0,
@@ -165,64 +122,87 @@ export default function Tools() {
       )
 
       physics.on('collisionStart', () => {
-        console.log('啊，撞到了')
+        // console.log('啊，撞到了')
       })
       game.scene.addChild(block)
-    }, 1500)
+
+      // 存在10秒后自动清除
+      setTimeout(() => {
+        game.scene.removeChild(block)
+      }, 10000)
+      setTimeout(() => {
+        requestAnimationFrame(genBlock)
+      }, 1500)
+    }
+    requestAnimationFrame(genBlock)
   }, [])
 
+  /**
+   * 移动物理单位
+   * @param {*} phyObj
+   * @param {*} num
+   * @param {*} pos
+   */
+  const movePhy = (phyObj = {}, num = 50, pos = 'y') => {
+    const { components } = phyObj
+    // 物理位置
+    components[2].body.positionPrev[pos] -= num
+    // 视图位置
+    components[2].body.position[pos] -= num
+  }
+  /**
+   * 移动单位
+   * @param {*} phyObj
+   * @param {*} num
+   * @param {*} pos
+   */
+  const moveObj = (phyObj = {}, num = 50, pos = 'y') => {
+    const { components } = phyObj
+    components[0].position[pos] -= num
+  }
   return (
     <>
-      <div className="home_bg">
-        <div
-          className="home_top"
+      <div
+        className="home_bg"
+        onClick={e => {
+          console.log('clk', e)
+          console.log(ship)
+          movePhy(ship)
+          moveObj(shipLight)
+        }}
+        onTouchStart={e => {
+          touchX = e.changedTouches[0].clientX
+        }}
+        onTouchEnd={e => {
+          const moveX = e.changedTouches[0].clientX - touchX
+          if (moveX < -500) {
+            console.log('向左')
+            movePhy(ship, 50, 'x')
+            moveObj(shipLight, 50, 'x')
+          }
+          if (moveX > 500) {
+            console.log('向右')
+            movePhy(ship, -50, 'x')
+            moveObj(shipLight, -50, 'x')
+          }
+        }}
+      >
+        {/* <div
+          className="home_btn"
           onClick={() => {
-            console.log('xxx')
+            console.log('111')
+            console.log(ship)
+            console.log(shipLight)
+
+            console.log(ship.components)
+
+            console.log(ship.transform.position)
+            // console.log()
+            movePhy(ship)
+            shipLight.components[0].position.y -= 10
           }}
-        >
-          111
-        </div>
+        /> */}
       </div>
     </>
   )
-}
-
-class Move extends Component {
-  static componentName = 'Move'
-
-  speed = {
-    // 移动速度
-    x: 100,
-    y: 200,
-  }
-
-  init(obj) {
-    Object.assign(this, obj)
-  }
-
-  update(e) {
-    // 每秒 N 像素
-    // console.log(e)
-    const { position } = this.gameObject.transform
-    this.gameObject.transform.position.x += this.speed.x * (e.deltaTime / 1000)
-    this.gameObject.transform.position.y += this.speed.y * (e.deltaTime / 1000)
-    if (position.x >= 390 || position.x <= 0) {
-      this.speed.x = -this.speed.x
-    }
-    if (position.y >= 844 || position.y <= 0) {
-      this.speed.y = -this.speed.y
-    }
-  }
-
-  onPause() {
-    this.oldSpeed = this.speed
-    this.speed = {
-      x: 0,
-      y: 0,
-    }
-  }
-
-  onResume() {
-    this.speed = this.oldSpeed
-  }
 }

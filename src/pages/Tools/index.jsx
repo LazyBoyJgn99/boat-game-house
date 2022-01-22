@@ -145,10 +145,18 @@ export default function Tools() {
    */
   const movePhy = (phyObj = {}, num = 50, pos = 'y') => {
     const { components } = phyObj
-    // 物理位置
-    components[2].body.positionPrev[pos] -= num
+
     // 视图位置
     components[2].body.position[pos] -= num
+    // 物理位置
+    // 四边形
+    components[2].body.bounds.max[pos] -= num
+    components[2].body.bounds.min[pos] -= num
+    // 多边形 待验证
+    components[2].body.vertices[0][pos] -= num
+    components[2].body.vertices[1][pos] -= num
+    components[2].body.vertices[2][pos] -= num
+    components[2].body.vertices[3][pos] -= num
   }
   /**
    * 移动单位

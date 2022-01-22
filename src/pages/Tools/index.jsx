@@ -68,7 +68,7 @@ export default function Tools() {
       block.transform.position.x += (speedX || speed) / speedC
       block.transform.position.y += (speedY || speed) / speedC
 
-      if (speedX === 0 || speedY === 0) {
+      if (speedX < 1 && speedX > -1) {
         container.removeChild(block)
         return
       }
@@ -276,7 +276,7 @@ export default function Tools() {
         },
       })
 
-      const cloudShadow = new GameObject('cloud-shadow', {
+      const cloudShadow = new GameObject('cloudShadow1', {
         size: {
           width,
           height,
@@ -394,7 +394,7 @@ export default function Tools() {
         }}
         onTouchEnd={e => {
           const moveX = e.changedTouches[0].clientX - touchX
-          const moveY = e.changedTouches[0].clientY - touchY
+          const moveY = (e.changedTouches[0].clientY - touchY) / 3
           const tan = moveX > 0 ? 0 : -3.14
 
           if (moveX < -300) {

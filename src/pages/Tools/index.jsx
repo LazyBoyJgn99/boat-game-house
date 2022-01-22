@@ -4,6 +4,7 @@ import { GameObject, Component } from '@eva/eva.js'
 import { Img, ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
 import { Physics, PhysicsType } from '@eva/plugin-matterjs'
 import { Render } from '@eva/plugin-renderer-render'
+import { Graphics } from '@eva/plugin-renderer-graphics'
 
 import { seaBgObj, shipObj, shipLightObj, footH } from '../../constant/objSettings'
 import gameInfo from '../../constant/game'
@@ -79,6 +80,36 @@ export default function Tools() {
     requestAnimationFrame(() => {
       move(speedX, speedY)
     })
+  }
+
+  const genMask = () => {
+    const { container } = gameInfo
+    const mask = new GameObject('mask', {
+      size: {
+        width: 395,
+        height: 400,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+    })
+
+    const maskGraphics = mask.addComponent(new Graphics())
+
+    for (let i = 0; i < 800; i++) {
+      maskGraphics.graphics.beginFill(0x0c5fee, 1 - i / 800)
+      maskGraphics.graphics.drawRect(0, i, 800, 1)
+      maskGraphics.graphics.endFill()
+    }
+
+    mask.addComponent(
+      new Render({
+        zIndex: 12,
+      }),
+    )
+
+    container.addChild(mask)
   }
 
   useEffect(() => {
@@ -188,6 +219,7 @@ export default function Tools() {
           zIndex: 3,
         }),
       )
+      console.log('block', block)
       const physics = block.addComponent(
         new Physics({
           type: PhysicsType.RECTANGLE,
@@ -212,40 +244,46 @@ export default function Tools() {
 
       physics.on('collisionStart', (obj1, obj2) => {
         console.log('啊，撞到了', obj1, obj2)
-        game.scene.removeChild(block)
+        container.removeChild(block)
       })
-      game.scene.addChild(block)
+      container.addChild(block)
 
       setTimeout(() => {
         if (block) {
-          game.scene.removeChild(block)
+          container.removeChild(block)
         }
       }, 20000)
+
+      setTimeout(() => {
+        requestAnimationFrame(genBlock)
+      }, 2500)
     }
 
     const genCloud = () => {
       const positionX = Math.floor(Math.random() * 390)
-      const speedY = Math.floor(Math.random() * 200)
+      const speedY = 50 + Math.floor(Math.random() * 150)
+      const width = 160 * (2 + 2 * Math.random())
+      const height = width / 2
 
       const cloud = new GameObject('cloud', {
         size: {
-          width: 160,
-          height: 80,
+          width,
+          height,
         },
         position: {
           x: positionX,
-          y: 0,
+          y: -height + 1,
         },
       })
 
       const cloudShadow = new GameObject('cloud-shadow', {
         size: {
-          width: 160,
-          height: 80,
+          width,
+          height,
         },
         position: {
-          x: positionX + 28,
-          y: 28,
+          x: positionX + width / 6,
+          y: -height + 1 + width / 6,
         },
       })
 
@@ -268,7 +306,7 @@ export default function Tools() {
 
       cloud.addComponent(
         new Render({
-          zIndex: 5,
+          zIndex: 11,
         }),
       )
 
@@ -290,23 +328,23 @@ export default function Tools() {
       )
       cloudShadow.addComponent(
         new Render({
-          zIndex: 4,
+          zIndex: 10,
         }),
       )
 
-      game.scene.addChild(cloudShadow)
-      game.scene.addChild(cloud)
-    }
+      console.log('cloud', cloud)
+      container.addChild(cloudShadow)
+      container.addChild(cloud)
 
-    const genObject = () => {
-      genBlock()
-      genCloud()
       setTimeout(() => {
-        requestAnimationFrame(genObject)
-      }, 2500)
+        requestAnimationFrame(genCloud)
+      }, 4000 + 8000 * Math.random())
     }
 
-    requestAnimationFrame(genObject)
+    requestAnimationFrame(genCloud)
+    requestAnimationFrame(genBlock)
+
+    genMask(game)
   }, [])
 
   /**
@@ -422,10 +460,10 @@ class Move extends Component {
     this.gameObject.transform.position.x += this.speed.x * (e.deltaTime / 1000)
     this.gameObject.transform.position.y += this.speed.y * (e.deltaTime / 1000)
     if (position.x >= 390 * 2 || position.x <= 0) {
-      this.game.scene.removeChild(this.gameObject)
+      // this.game?.removeChild(this.gameObject)
     }
     if (position.y >= 844 * 2 || position.y <= 0) {
-      this.game.scene.removeChild(this.gameObject)
+      // this.game?.removeChild(this.gameObject)
     }
   }
 

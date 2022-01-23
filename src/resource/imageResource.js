@@ -166,4 +166,37 @@ resource.addResource([
     },
     preload: true,
   },
+  {
+    name: 'iconHeart1',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/Icon_heart1.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'btnNpr1',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/Btn_npr1.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'btnRanksg1',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/Btn_ranksg1.png',
+      },
+    },
+    preload: true,
+  },
 ])

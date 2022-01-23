@@ -84,6 +84,9 @@ export default function Tools() {
     })
   }
 
+  /**
+   * 顶层遮罩
+   */
   const genMask = () => {
     const { container } = gameInfo
     const mask = new GameObject('mask', {
@@ -114,6 +117,111 @@ export default function Tools() {
     container.addChild(mask)
   }
 
+  /**
+   * 底部静态
+   */
+  const genFooter = () => {
+    const { container } = gameInfo
+    const footer = new GameObject('footer', {
+      size: {
+        width: 750,
+        height: 120,
+      },
+      position: {
+        x: 0,
+        y: 1254,
+      },
+    })
+
+    footer.addComponent(
+      new Render({
+        zIndex: 12,
+      }),
+    )
+
+    const footerGraphics = footer.addComponent(new Graphics())
+
+    footerGraphics.graphics.beginFill(0x000000, 0.4)
+    footerGraphics.graphics.drawRect(0, 0, 750, 80)
+    footerGraphics.graphics.endFill()
+
+    const btnNpr1 = new GameObject('left', {
+      size: {
+        width: 120,
+        height: 120,
+      },
+      position: {
+        x: 20,
+        y: 1194,
+      },
+    })
+
+    btnNpr1.addComponent(
+      new Img({
+        resource: 'btnNpr1',
+      }),
+    )
+
+    btnNpr1.addComponent(
+      new Render({
+        zIndex: 13,
+      }),
+    )
+
+    const btnRanksg1 = new GameObject('right', {
+      size: {
+        width: 120,
+        height: 120,
+      },
+      position: {
+        x: 610,
+        y: 1194,
+      },
+    })
+
+    btnRanksg1.addComponent(
+      new Img({
+        resource: 'btnRanksg1',
+      }),
+    )
+
+    btnRanksg1.addComponent(
+      new Render({
+        zIndex: 13,
+      }),
+    )
+
+    for (let i = 0; i < 3; i++) {
+      const head = new GameObject('head', {
+        size: {
+          width: 80,
+          height: 70,
+        },
+        position: {
+          x: 245 + 90 * i,
+          y: 1260,
+        },
+      })
+
+      head.addComponent(
+        new Img({
+          resource: 'iconHeart1',
+        }),
+      )
+
+      head.addComponent(
+        new Render({
+          zIndex: 13,
+        }),
+      )
+
+      container.addChild(head)
+    }
+
+    container.addChild(footer)
+    container.addChild(btnNpr1)
+    container.addChild(btnRanksg1)
+  }
   useEffect(() => {
     const { game, container } = gameInfo
 
@@ -378,6 +486,7 @@ export default function Tools() {
     requestAnimationFrame(genBlock)
 
     genMask(game)
+    genFooter()
   }, [])
 
   const shipLightFollow = () => {

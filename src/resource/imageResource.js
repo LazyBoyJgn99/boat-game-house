@@ -199,4 +199,48 @@ resource.addResource([
     },
     preload: true,
   },
+  {
+    name: 'GO0',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/GO_0.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'GO1',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/GO_1.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'GO2',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/GO_2.png',
+      },
+    },
+    preload: true,
+  },
+  {
+    name: 'GO3',
+    type: RESOURCE_TYPE.IMAGE,
+    src: {
+      image: {
+        type: 'png',
+        url: 'http://106.15.32.115:8095/api/images/GO_3.png',
+      },
+    },
+    preload: true,
+  },
 ])

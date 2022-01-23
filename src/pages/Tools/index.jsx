@@ -121,7 +121,9 @@ export default function Tools() {
    * 底部静态
    */
   const genFooter = () => {
-    const { container } = gameInfo
+    const footers = {
+      heads: [],
+    }
     const footer = new GameObject('footer', {
       size: {
         width: 750,
@@ -215,12 +217,86 @@ export default function Tools() {
         }),
       )
 
-      container.addChild(head)
+      footers.heads.push(head)
     }
 
-    container.addChild(footer)
-    container.addChild(btnNpr1)
-    container.addChild(btnRanksg1)
+    footers.footer = footer
+    footers.btnNpr1 = btnNpr1
+    footers.btnRanksg1 = btnRanksg1
+
+    return footers
+  }
+
+  /**
+   * 准备动画
+   */
+  const readAnim = () => {
+    const { container } = gameInfo
+    const renderObj = genFooter()
+    const genGoObj = num => {
+      const go = new GameObject(`go${num}`, {
+        size: {
+          width: 160,
+          height: 120,
+        },
+        position: {
+          x: 375,
+          y: 507,
+        },
+        origin: {
+          x: 0.5,
+          y: 0.5,
+        },
+        scale: {
+          x: 1.5,
+          y: 1.5,
+        },
+      })
+
+      go.addComponent(
+        new Img({
+          resource: `GO${num}`,
+        }),
+      )
+
+      go.addComponent(
+        new Render({
+          zIndex: 12,
+        }),
+      )
+
+      return go
+    }
+
+    const go3 = genGoObj(3)
+    container.addChild(go3)
+    const runAnim = (go, num) => () => {
+      const { x, y } = go.components[0].scale
+      go.components[0].scale.x = x - 0.015
+      go.components[0].scale.y = y - 0.015
+      if (x >= 0.9 && y >= 0.9) {
+        requestAnimationFrame(runAnim(go, num))
+      } else {
+        container.removeChild(go)
+        if (num > 0) {
+          const nextGo = genGoObj(--num)
+          container.addChild(nextGo)
+          requestAnimationFrame(runAnim(nextGo, num))
+        } else {
+          Object.keys(renderObj).forEach(key => {
+            if (renderObj[key] instanceof Array) {
+              renderObj[key].forEach(item => {
+                container.addChild(item)
+              })
+            } else {
+              container.addChild(renderObj[key])
+            }
+          })
+        }
+      }
+    }
+
+    requestAnimationFrame(runAnim(go3, 3))
   }
   useEffect(() => {
     const { game, container } = gameInfo
@@ -486,7 +562,7 @@ export default function Tools() {
     requestAnimationFrame(genBlock)
 
     genMask(game)
-    genFooter()
+    readAnim()
   }, [])
 
   const shipLightFollow = () => {

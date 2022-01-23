@@ -50,7 +50,8 @@
     "consistent-return": 0,
     "no-plusplus": 0,
     "no-nested-ternary": 0,
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "react/self-closing-comp": "off",
   },
   "globals": {
     "window": true

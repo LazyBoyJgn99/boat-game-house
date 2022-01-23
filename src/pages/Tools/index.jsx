@@ -273,15 +273,16 @@ export default function Tools() {
     const go3 = genGoObj(3)
     container.addChild(go3)
     const runAnim = (go, num) => () => {
-      const { x, y } = go.components[0].scale
-      go.components[0].scale.x = x - 0.015
-      go.components[0].scale.y = y - 0.015
+      const { components } = go
+      const { x, y } = components[0].scale
+      components[0].scale.x = x - 0.015
+      components[0].scale.y = y - 0.015
       if (x >= 0.9 && y >= 0.9) {
         requestAnimationFrame(runAnim(go, num))
       } else {
         container.removeChild(go)
         if (num > 0) {
-          const nextGo = genGoObj(--num)
+          const nextGo = genGoObj(+num)
           container.addChild(nextGo)
           requestAnimationFrame(runAnim(nextGo, num))
         } else {
@@ -609,7 +610,7 @@ export default function Tools() {
     const { PhysicsEngine } = phyObj
     PhysicsEngine.world.bodies.map(item => {
       const { force } = item
-      force[pos] = num > 0 ? num : -num
+      force[pos] = num
       return null
     })
 
@@ -658,7 +659,7 @@ export default function Tools() {
               rotation: Math.atan(moveY / moveX) * 2 + tan,
             })
             movePhy({ phyObj: shipPhysical, num: 0.5, pos: 'x' })
-            movePhy({ phyObj: gameObjSpacePhysical, num: -0.5, pos: 'x', big: 10 })
+            movePhy({ phyObj: gameObjSpacePhysical, num: -0.5, pos: 'x' })
             moveObj(shipLight, 50, 'x')
           }
           if (moveX > 300) {
@@ -669,7 +670,7 @@ export default function Tools() {
               rotation: Math.atan(moveY / moveX) * 2 + tan,
             })
             movePhy({ phyObj: shipPhysical, num: -0.5, pos: 'x' })
-            movePhy({ phyObj: gameObjSpacePhysical, num: 0.5, pos: 'x', big: 10 })
+            movePhy({ phyObj: gameObjSpacePhysical, num: 0.5, pos: 'x' })
             moveObj(shipLight, -50, 'x')
           }
         }}

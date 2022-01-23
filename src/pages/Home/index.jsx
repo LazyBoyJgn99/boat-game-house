@@ -274,13 +274,13 @@ export default function Home() {
         <div className="home_top">
           <div
             className="home_top_left"
-            onClick={e => {
+            onClick={() => {
               console.log(123)
               handleClickSet()
             }}
-          ></div>
+          />
           <div className="home_top_score">165.9m</div>
-          <div className="home_top_right"></div>
+          <div className="home_top_right" />
         </div>
       </div>
     </>

@@ -265,11 +265,23 @@ export default function Home() {
     }
     requestAnimationFrame(getCloud)
   }, [])
-
+  const handleClickSet = () => {
+    console.log(111)
+  }
   return (
     <>
-      <div className="home_bg">
-        <div className="home_top" />
+      <div className="home1_bg">
+        <div className="home_top">
+          <div
+            className="home_top_left"
+            onClick={e => {
+              console.log(123)
+              handleClickSet()
+            }}
+          ></div>
+          <div className="home_top_score">165.9m</div>
+          <div className="home_top_right"></div>
+        </div>
       </div>
     </>
   )

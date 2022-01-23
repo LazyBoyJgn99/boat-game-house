@@ -15,6 +15,8 @@ export default function Tools() {
   let seaBg
   let ship
   let coast
+  let coast2
+  let coast2Phy
   let shipPhysical
   let shipLight
   let physics
@@ -115,9 +117,10 @@ export default function Tools() {
   }
 
   useEffect(() => {
-    const { game, container } = gameInfo
+    const { game, container, gameObjSpace } = gameInfo
 
     game.scene.addChild(container)
+    container.addChild(gameObjSpace)
 
     seaBg = new GameObject('seaBg', {
       size: {
@@ -125,14 +128,24 @@ export default function Tools() {
         height: seaBgObj.h,
       },
     })
-    coast = new GameObject('ship', {
+    coast = new GameObject('coast', {
       size: {
-        width: seaBgObj.w,
+        width: seaBgObj.w * 7,
         height: 20,
       },
       position: {
-        x: +((seaBgObj.w - shipObj.w) / 2).toFixed(0),
+        x: 0,
         y: seaBgObj.h - 250,
+      },
+    })
+    coast2 = new GameObject('coast', {
+      size: {
+        width: seaBgObj.w * 7,
+        height: 50,
+      },
+      position: {
+        x: 0,
+        y: 200,
       },
     })
 
@@ -167,11 +180,6 @@ export default function Tools() {
         resource: 'ship',
       }),
     )
-    ship.addComponent(
-      new Render({
-        zIndex: 3,
-      }),
-    )
 
     shipPhysical = ship.addComponent(
       new Physics({
@@ -188,7 +196,7 @@ export default function Tools() {
           },
           collisionFilter: {
             category: 0x0001,
-            mask: 0x0010,
+            mask: 0x0011,
             group: -2,
           },
         },
@@ -209,6 +217,20 @@ export default function Tools() {
         stopRotation: true,
       }),
     )
+    coast2Phy = coast2.addComponent(
+      new Physics({
+        type: PhysicsType.RECTANGLE,
+        bodyOptions: {
+          isStatic: true,
+          collisionFilter: {
+            category: 0x10000000,
+            mask: 0x01000000,
+            group: -14,
+          },
+        },
+        stopRotation: true,
+      }),
+    )
     shipLight.addComponent(
       new Img({
         resource: 'shipLight',
@@ -221,9 +243,10 @@ export default function Tools() {
     )
 
     container.addChild(seaBg) // 把游戏对象放入场景，这样画布上就可以显示这张图片了
-    container.addChild(shipLight)
-    container.addChild(ship)
+    gameObjSpace.addChild(shipLight)
+    gameObjSpace.addChild(ship)
     container.addChild(coast)
+    container.addChild(coast2)
 
     shipLightFollow()
 
@@ -277,13 +300,13 @@ export default function Tools() {
 
       physics.on('collisionStart', (obj1, obj2) => {
         console.log('啊，撞到了', obj1, obj2)
-        container.removeChild(block)
+        gameObjSpace.removeChild(block)
       })
-      container.addChild(block)
+      gameObjSpace.addChild(block)
 
       setTimeout(() => {
         if (block) {
-          container.removeChild(block)
+          gameObjSpace.removeChild(block)
         }
       }, 20000)
 
@@ -393,20 +416,19 @@ export default function Tools() {
    * @param {*} num
    * @param {*} pos
    */
-  const movePhy = (phyObj = {}, num = 50, pos = 'y') => {
-    const { components } = phyObj
-    if (pos === 'y') {
-      // eslint-disable-next-line no-param-reassign
-      phyObj.body.force.y = -2
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      phyObj.body.force.x = num > 0 ? -0.3 : 0.3
-    }
+  const movePhy = ({ phyObj = {}, num = 0.5, pos = 'y' }) => {
+    const { body } = phyObj
+    body.force[pos] = num
+  }
+  const movePhyPos = ({ phyObj = {}, num = 0.5, pos = 'y' }) => {
+    const { PhysicsEngine } = phyObj
+    PhysicsEngine.world.bodies.map(item => {
+      const { force } = item
+      force[pos] = num > 0 ? num : -num
+      return null
+    })
 
-    // // 物理位置
-    // components[2].body.positionPrev[pos] -= num
-    // // 视图位置
-    // components[2].body.position[pos] -= num
+    // phyObj.body
   }
   /**
    * 移动单位
@@ -423,9 +445,12 @@ export default function Tools() {
       <div
         className="home_bg"
         onClick={e => {
+          const { gameObjSpacePhysical } = gameInfo
+
           console.log('clk', e)
           console.log(ship)
-          movePhy(shipPhysical)
+          movePhy({ phyObj: shipPhysical })
+          movePhyPos({ phyObj: coast2Phy })
           moveObj(shipLight)
         }}
         onTouchStart={e => {
@@ -433,6 +458,7 @@ export default function Tools() {
           touchY = e.changedTouches[0].clientY
         }}
         onTouchEnd={e => {
+          const { gameObjSpacePhysical } = gameInfo
           const moveX = e.changedTouches[0].clientX - touchX
           const moveY = (e.changedTouches[0].clientY - touchY) / 3
           const tan = moveX > 0 ? 0 : -3.14
@@ -446,7 +472,8 @@ export default function Tools() {
               speedY: moveY / 2,
               rotation: Math.atan(moveY / moveX) * 2 + tan,
             })
-            movePhy(shipPhysical, 50, 'x')
+            movePhy({ phyObj: shipPhysical, num: 0.5, pos: 'x' })
+            movePhy({ phyObj: gameObjSpacePhysical, num: -0.5, pos: 'x', big: 10 })
             moveObj(shipLight, 50, 'x')
           }
           if (moveX > 300) {
@@ -456,7 +483,8 @@ export default function Tools() {
               speedY: moveY / 2,
               rotation: Math.atan(moveY / moveX) * 2 + tan,
             })
-            movePhy(shipPhysical, -50, 'x')
+            movePhy({ phyObj: shipPhysical, num: -0.5, pos: 'x' })
+            movePhy({ phyObj: gameObjSpacePhysical, num: 0.5, pos: 'x', big: 10 })
             moveObj(shipLight, -50, 'x')
           }
         }}

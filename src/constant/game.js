@@ -1,7 +1,7 @@
 import { Game, GameObject } from '@eva/eva.js'
 import { RendererSystem } from '@eva/plugin-renderer'
 import { ImgSystem } from '@eva/plugin-renderer-img' // 引入渲染图片所需要的组件和系统
-import { PhysicsSystem } from '@eva/plugin-matterjs'
+import { PhysicsSystem, Physics, PhysicsType } from '@eva/plugin-matterjs'
 import { GraphicsSystem } from '@eva/plugin-renderer-graphics'
 import { TextSystem } from '@eva/plugin-renderer-text'
 import { EventSystem } from '@eva/plugin-renderer-event'
@@ -53,11 +53,51 @@ const gameInfo = {
     },
     origin: { x: 0, y: 0 },
   }),
+  gameObjSpace: new GameObject('gameObjSpace', {
+    size: {
+      width: 114,
+      height: 222,
+    },
+    position: {
+      x: 0,
+      y: 0,
+    },
+    origin: { x: 0, y: 0 },
+  }),
+  gameObjSpacePhysical: {},
 }
 
 gameInfo.container.addComponent(
   new Render({
     sortableChildren: true,
+  }),
+)
+gameInfo.gameObjSpace.addComponent(
+  new Render({
+    zIndex: 3,
+  }),
+)
+
+gameInfo.gameObjSpacePhysical = gameInfo.gameObjSpace.addComponent(
+  new Physics({
+    type: PhysicsType.RECTANGLE,
+    bodyOptions: {
+      isStatic: false,
+      // restitution: 0,
+      frictionAir: 0.01,
+      friction: 0.06,
+      frictionStatic: 0.3,
+      force: {
+        x: 0,
+        y: 0,
+      },
+      collisionFilter: {
+        category: 0x01000000,
+        mask: 0x10000000,
+        group: -12,
+      },
+    },
+    stopRotation: true,
   }),
 )
 

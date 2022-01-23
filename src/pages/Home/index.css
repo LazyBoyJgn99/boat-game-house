@@ -1,3 +1,42 @@
-.home_bg {
+.home1_bg {
+  width: 100%;
   position: relative;
+  
+}
+.home1_bg .home_top{
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  padding: 6rem 8rem;
+  width: 100%;
+  z-index: 9999;
+}
+.home_top .home_top_left{
+  height: 104px;
+  flex: 0 0 104px;
+  background: url(../../static/img/Btn_2set1.png) no-repeat;
+}
+.home_top .home_top_right{
+  height: 104px;
+  flex: 0 0 104px;
+  background: url(../../static/img/Btn_2rank1.png) no-repeat;
+}
+.home_top .home_top_score{
+  margin: 0 4rem;
+  flex: 1 0 auto;
+  height: 104px;
+  line-height: 104px;
+  text-align: center;
+  font-size: 8rem;
+  font-family: '04B_03B', serif;
+  text-shadow: #000 5px 0 0, #000 0 5px 0, #000 -5px 0 0, #000 0 -5px 0;
+  background: url(../../static/img/blk_466122.png) no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #fff;
+}
+@font-face {
+  font-family: '04B_03B';
+  font-style: normal;
+  src: url(../../static/font/04B_03B_.TTF) format('woff');
 }

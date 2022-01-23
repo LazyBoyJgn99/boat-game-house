@@ -282,7 +282,7 @@ export default function Tools() {
       } else {
         container.removeChild(go)
         if (num > 0) {
-          const nextGo = genGoObj(+num)
+          const nextGo = genGoObj(--num)
           container.addChild(nextGo)
           requestAnimationFrame(runAnim(nextGo, num))
         } else {
